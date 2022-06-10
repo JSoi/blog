@@ -1,5 +1,7 @@
 package com.blog.server.blog.domain;
 
+import com.blog.server.blog.dto.CommentDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +27,15 @@ public class Comment extends TimeStamped {
 
     @Column
     private String content;
+
+    @Builder
+    public Comment(Post post, User user, String content) {
+        this.content = content;
+        this.post = post;
+        this.user = user;
+    }
+
+    public void update(CommentDto commentDto) {
+        this.content = commentDto.getContent();
+    }
 }
