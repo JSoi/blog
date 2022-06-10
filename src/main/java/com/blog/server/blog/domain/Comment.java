@@ -8,9 +8,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "comment")
 public class Comment extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
     Long id;
 
     @ManyToOne
