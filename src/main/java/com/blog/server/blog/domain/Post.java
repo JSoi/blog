@@ -1,5 +1,6 @@
 package com.blog.server.blog.domain;
 
+import com.blog.server.blog.dto.PostRequestDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
@@ -30,6 +31,10 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
 
+    @Column
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
+
     @Column(nullable = false)
     private String title;
 
@@ -40,8 +45,7 @@ public class Post extends TimeStamped {
     private String image_url;
 
     @Column
-    @ColumnDefault("0")
-    private Long view_count;
+    private Long view_count = 0L;
 
     @Builder
     public Post(User user, String title, String content, String image_url) {
@@ -49,5 +53,16 @@ public class Post extends TimeStamped {
         this.title = title;
         this.content = content;
         this.image_url = image_url;
+    }
+
+    public Post(PostRequestDto postRequestDto) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.image_url = postRequestDto.getImage_url();
+    }
+    public void update(PostRequestDto postRequestDto){
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.image_url = postRequestDto.getImage_url();
     }
 }

@@ -2,7 +2,7 @@ package com.blog.server.blog.service;
 
 import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.domain.User;
-import com.blog.server.blog.dto.PostDto;
+import com.blog.server.blog.dto.PostRequestDto;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,20 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void addNewPost(PostDto postDto) {
+    public void addNewPost(PostRequestDto postRequestDto) {
         //User 설정해주기
-        User targetUser = userRepository.findById(postDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
-        postRepository.save(Post.builder().user(targetUser).content(postDto.getContent()).title(postDto.getTitle()).image_url(postDto.getImage_url()).build());
+        User targetUser = userRepository.findById(postRequestDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+        postRepository.save(Post.builder()
+                .user(targetUser)
+                .content(postRequestDto.getContent())
+                .title(postRequestDto.getTitle())
+                .image_url(postRequestDto.getImage_url()).build());
+    }
+
+    @Transactional
+    public void update(Long postId, PostRequestDto requestDto) {
+        Post targetPost = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
+        targetPost.update(requestDto);
+        postRepository.save(targetPost);
     }
 }

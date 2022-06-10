@@ -1,8 +1,8 @@
 package com.blog.server.blog.controller;
 
 import com.blog.server.blog.domain.Post;
-import com.blog.server.blog.domain.Response;
-import com.blog.server.blog.dto.PostDto;
+import com.blog.server.blog.domain.response.ResponseSimple;
+import com.blog.server.blog.dto.PostRequestDto;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,9 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public Response addPosts(@RequestBody PostDto post) {
+    public ResponseSimple addPosts(@RequestBody PostRequestDto post) {
         postService.addNewPost(post);
-        return Response.builder().result(true).build();
+        return ResponseSimple.builder().result(true).build();
     }
 
     /**
@@ -34,8 +34,8 @@ public class PostController {
      * 추후에 추가할 예정
      */
     @PostMapping("/api/image")
-    public Response addImage() {
-        return Response.builder().result(true).build();
+    public ResponseSimple addImage() {
+        return ResponseSimple.builder().result(true).build();
     }
 
     // 게시글 조회
@@ -44,17 +44,19 @@ public class PostController {
         return  postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
     }
 
+    // delete GET 방식 얘기하기
     @DeleteMapping("/api/posts/{postId}")
-    public Response deletePost(@PathVariable Long postId) {
+    public ResponseSimple deletePost(@PathVariable Long postId) {
         postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
         postRepository.deleteById(postId);
-        return Response.builder().result(true).build();
+        return ResponseSimple.builder().result(true).build();
     }
 
     @PutMapping("/api/posts/{postId}")
-    public Response fixPost(@PathVariable Long postId) {
-        postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
-        return Response.builder().result(true).build();
+    public ResponseSimple fixPost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto) {
+
+        postService.update(postId, requestDto);
+        return ResponseSimple.builder().result(true).build();
     }
 
 
