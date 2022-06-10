@@ -1,6 +1,6 @@
 package com.blog.server.blog.service;
 
-import com.blog.server.blog.dto.user.LoginDto;
+import com.blog.server.blog.dto.LoginDto;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
