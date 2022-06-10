@@ -1,14 +1,13 @@
-package com.blog.server.blog.domain;
+package com.blog.server.blog.domain.response;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
 @Builder
-public class Response {
+public class ResponseSimple {
     @Builder.Default
     boolean result = false;
     @Builder.Default

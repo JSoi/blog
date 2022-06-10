@@ -1,4 +1,4 @@
-package com.blog.server.blog.dto.user;
+package com.blog.server.blog.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
