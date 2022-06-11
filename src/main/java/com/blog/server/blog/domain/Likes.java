@@ -23,5 +23,8 @@ public class Likes extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-
+    public Likes(Post post, User user) {
+        this.post = post;
+        this.user = user;
+    }
 }

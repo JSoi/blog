@@ -20,15 +20,15 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void addComment(CommentDto commentDto) {
-        Post targetPost = postRepository.findById(commentDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("postID가 유효하지 않습니다"));
-        User user = userRepository.findById(commentDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("userID가 유효하지 않습니다"));
-        commentRepository.save(new Comment(targetPost, user, commentDto.getContent()));
+    public void addComment(CommentDto.NewComment newCommentDto) {
+        Post targetPost = postRepository.findById(newCommentDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("postID가 유효하지 않습니다"));
+        User user = userRepository.findById(newCommentDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("userID가 유효하지 않습니다"));
+        commentRepository.save(new Comment(targetPost, user, newCommentDto.getContent()));
 
     }
 
     @Transactional
-    public void update(Long commentId, CommentDto commentDto) {
+    public void update(Long commentId, CommentDto.UpdateComment commentDto) {
         Comment targetComment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("INVALID CommentID"));
         targetComment.update(commentDto);
         commentRepository.save(targetComment);

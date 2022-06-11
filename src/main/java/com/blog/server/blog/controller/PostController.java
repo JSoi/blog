@@ -2,7 +2,7 @@ package com.blog.server.blog.controller;
 
 import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.domain.response.ResponseSimple;
-import com.blog.server.blog.dto.PostRequestDto;
+import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public ResponseSimple addPosts(@RequestBody PostRequestDto post) {
+    public ResponseSimple addPosts(@RequestBody PostDto.NewPost post) {
         postService.addNewPost(post);
         return ResponseSimple.builder().result(true).build();
     }
@@ -53,8 +53,7 @@ public class PostController {
     }
 
     @PutMapping("/api/posts/{postId}")
-    public ResponseSimple fixPost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto) {
-
+    public ResponseSimple fixPost(@PathVariable Long postId, @RequestBody PostDto.UpdatePost requestDto) {
         postService.update(postId, requestDto);
         return ResponseSimple.builder().result(true).build();
     }

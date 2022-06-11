@@ -1,12 +1,11 @@
 package com.blog.server.blog.domain;
 
-import com.blog.server.blog.dto.PostRequestDto;
+import com.blog.server.blog.dto.PostDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,10 +34,11 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 25)
     private String title;
 
     @Column(nullable = false)
+    @Lob
     private String content;
 
     @Column(nullable = false)
@@ -55,14 +55,10 @@ public class Post extends TimeStamped {
         this.image_url = image_url;
     }
 
-    public Post(PostRequestDto postRequestDto) {
-        this.title = postRequestDto.getTitle();
-        this.content = postRequestDto.getContent();
-        this.image_url = postRequestDto.getImage_url();
-    }
-    public void update(PostRequestDto postRequestDto){
-        this.title = postRequestDto.getTitle();
-        this.content = postRequestDto.getContent();
-        this.image_url = postRequestDto.getImage_url();
+
+    public void update(PostDto.UpdatePost updatePost) {
+        this.title = updatePost.getTitle();
+        this.content = updatePost.getContent();
+        this.image_url = updatePost.getImage_url();
     }
 }
