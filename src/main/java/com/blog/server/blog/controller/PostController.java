@@ -4,11 +4,14 @@ import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.repository.PostRepository;
+import com.blog.server.blog.security.JwtTokenProvider;
 import com.blog.server.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -18,6 +21,7 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
 
+    @Secured({"ROLE_USER","ROLE,ADMIN"})
     @GetMapping("/api/posts")
     public List<Post> getAllPost() { // 고치기
         return postRepository.findAll();
@@ -33,18 +37,22 @@ public class PostController {
      * @return response
      * 추후에 추가할 예정
      */
+    @Secured({"ROLE_USER","ROLE,ADMIN"})
     @PostMapping("/api/image")
     public Response.Simple addImage() {
         return Response.Simple.builder().result(true).build();
     }
 
     // 게시글 조회
+
+    @Secured({"ROLE_USER","ROLE,ADMIN"})
     @GetMapping("/api/posts/{postId}")
     public Post getPost(@PathVariable Long postId) {
         return  postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
     }
 
     // delete GET 방식 얘기하기
+    @Secured({"ROLE_USER","ROLE,ADMIN"})
     @DeleteMapping("/api/posts/{postId}")
     public Response.Simple deletePost(@PathVariable Long postId) {
         postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
@@ -52,6 +60,7 @@ public class PostController {
         return Response.Simple.builder().result(true).build();
     }
 
+    @Secured({"ROLE_USER","ROLE,ADMIN"})
     @PutMapping("/api/posts/{postId}")
     public Response.Simple fixPost(@PathVariable Long postId, @RequestBody PostDto.UpdatePost requestDto) {
         postService.update(postId, requestDto);
