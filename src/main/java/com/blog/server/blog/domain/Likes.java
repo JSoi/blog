@@ -8,9 +8,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "likes")
 public class Likes extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true)
     private Long id;
 
     @ManyToOne
@@ -21,5 +23,8 @@ public class Likes extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-
+    public Likes(Post post, User user) {
+        this.post = post;
+        this.user = user;
+    }
 }
