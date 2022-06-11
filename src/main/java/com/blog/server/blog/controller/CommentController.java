@@ -1,6 +1,6 @@
 package com.blog.server.blog.controller;
 
-import com.blog.server.blog.domain.response.ResponseSimple;
+import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.CommentDto;
 import com.blog.server.blog.repository.CommentRepository;
 import com.blog.server.blog.service.CommentService;
@@ -15,20 +15,20 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public void addComments(@RequestBody CommentDto.NewComment commentDto) {
+    public Response.Simple addComments(@RequestBody CommentDto.NewComment commentDto) {
         commentService.addComment(commentDto);
-        ResponseSimple.builder().result(true).code(200);
+        return Response.Simple.builder().result(true).code(200).build();
     }
 
     @DeleteMapping("{commentId}")
-    public void deleteComments(@PathVariable Long commentId) {
+    public Response.Simple deleteComments(@PathVariable Long commentId) {
         commentRepository.deleteById(commentId);
-        ResponseSimple.builder().result(true).code(200);
+        return Response.Simple.builder().result(true).code(200).build();
     }
 
     @PutMapping("{commentId}")
-    public void fixComments(@PathVariable Long commentId, @RequestBody CommentDto.UpdateComment commentDto) {
+    public Response.Simple fixComments(@PathVariable Long commentId, @RequestBody CommentDto.UpdateComment commentDto) {
         commentService.update(commentId, commentDto);
-        ResponseSimple.builder().result(true).code(200);
+        return Response.Simple.builder().result(true).code(200).build();
     }
 }
