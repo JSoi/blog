@@ -4,20 +4,28 @@ package com.blog.server.blog.domain;
 import com.blog.server.blog.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "user")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
-public class User extends TimeStamped {
+public class User extends TimeStamped implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
@@ -32,7 +40,7 @@ public class User extends TimeStamped {
     @Column(nullable = false, unique = true, length = 20)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String password;
 
     @Column
@@ -50,25 +58,40 @@ public class User extends TimeStamped {
     @Column
     private String introduce;
 
-    @Builder
-    public User(String name, String nickname, String email, String password, List<Comment> commentList, List<Likes> likesList, List<Post> postList, String introduce) {
-        this.name = name;
-        this.nickname = nickname;
-        this.email = email;
-        this.password = password;
-        this.commentList = commentList;
-        this.likesList = likesList;
-        this.postList = postList;
-        this.introduce = introduce;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
-    public User(UserDto.Register registerDto) {
-        User.builder().name(registerDto.getName())
-                .email(registerDto.getEmail())
-                .introduce(registerDto.getIntroduce())
-                .password(registerDto.getPassword())
-                .nickname(registerDto.getNickname()).build();
+    @Override
+    public String getUsername() {
+        return email;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
