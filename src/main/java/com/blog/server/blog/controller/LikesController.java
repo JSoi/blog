@@ -16,8 +16,8 @@ public class LikesController {
     private final LikesService likeService;
 
     @PostMapping("/{postId}/like")
-    public Response.Simple addLike(@RequestBody LikesDto likesDto){
-        return likeService.dolike(likesDto);
+    public Response.Simple addLike(@PathVariable Long postId, @RequestBody LikesDto likesDto){
+        return likeService.dolike(postId,likesDto);
     }
 
         @DeleteMapping("/{postId}/like")
