@@ -21,9 +21,9 @@ public class LikesService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response.Simple dolike(LikesDto likesDto) {
+    public Response.Simple dolike(Long postId, LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("INVALID USERID"));
-        Post targetPost = postRepository.findById(likesDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("INVALID POSTID"));
+        Post targetPost = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("INVALID POSTID"));
         likesRepository.save(new Likes(targetPost, targetUser));
         return Response.Simple.builder().result(true).build();
     }
