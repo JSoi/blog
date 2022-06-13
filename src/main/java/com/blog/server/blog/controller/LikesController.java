@@ -23,7 +23,14 @@ public class LikesController {
     }
 
     @DeleteMapping("/{postId}/like")
+<<<<<<< HEAD
     public Response.Simple unLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         return likeService.undoLike(LikesDto.builder().post_id(postId).user_id(user.getId()).build());
+=======
+    public Response.Simple unLike(@PathVariable Long postId, @RequestBody LikesDto likesDto) {
+            likesRepository.findById(likesDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("INVALID LIKEID"));
+            likesRepository.deleteById(postId);
+            return Response.Simple.builder().result(true).build();
+>>>>>>> feature/api
     }
 }

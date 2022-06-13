@@ -4,6 +4,7 @@ import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.dto.Response;
+import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.security.JwtTokenProvider;
 import com.blog.server.blog.service.PostService;
@@ -14,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,14 +53,14 @@ public class PostController {
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/api/posts/{postId}")
     public Post getPost(@PathVariable Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
+        return postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/api/posts/{postId}")
     public Response.Simple deletePost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         // 여기에 자기 포스트가 아니면 삭제할 수 없는 기능을 추가하면 좋을 것 같다!
-        postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
+        postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
         postRepository.deleteById(postId);
         return Response.Simple.builder().result(true).build();
     }
