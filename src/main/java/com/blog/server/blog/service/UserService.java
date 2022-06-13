@@ -40,7 +40,7 @@ public class UserService {
     public Response.Login login(UserDto.Login loginDto) {
         User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new BlogException(ErrorCode.WRONG_ID));
         if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new BlogException(ErrorCode.BAD_LOGIN);
         }
         String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getId(), targetUser.getRoles());
         return Response.Login.builder().result(true).token(token).nickname(targetUser.getNickname()).build();
