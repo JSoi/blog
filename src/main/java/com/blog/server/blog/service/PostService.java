@@ -6,6 +6,8 @@ import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,9 +30,12 @@ public class PostService {
     }
 
     @Transactional
-    public void update(Long postId, PostDto.UpdatePost updatePost) {
+    public void update(Long postId, PostDto.UpdatePost updatePost, Long userId) {
+        // userId는 쓰지 않지만 추후에 확장 가능할 것 같다!
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
         targetPost.update(updatePost);
         postRepository.save(targetPost);
     }
+
+
 }

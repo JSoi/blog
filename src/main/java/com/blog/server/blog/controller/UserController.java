@@ -22,7 +22,7 @@ public class UserController {
 
     //회원등록
     @PostMapping("/register")
-    public Response.Simple register(@RequestBody UserDto.Register userRegister) {
+    public Response.Simple register(@RequestBody UserDto.Register userRegister, @AuthenticationPrincipal User user) {
         User newUser = User.builder().name(userRegister.getName())
                 .nickname(userRegister.getNickname())
                 .email(userRegister.getEmail())
@@ -36,18 +36,18 @@ public class UserController {
 
     //로그인
     @PostMapping("/login")
-    public Response.Login login(@RequestBody UserDto.Login loginDto) {
+    public Response.Login login(@RequestBody UserDto.Login loginDto, @AuthenticationPrincipal User user) {
         User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다"));
         if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-        String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getRoles());
+        String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getId(), targetUser.getRoles());
         return Response.Login.builder().result(true).token(token).nickname(targetUser.getNickname()).build();
     }
 
     @GetMapping("/user")
-    public User userInfo(@RequestBody UserDto.Info userInfo) {
-        return userRepository.findById(userInfo.getUser_id()).orElseThrow(() -> new IllegalArgumentException("UserID가 존재하지 않습니다."));
+    public User userInfo(@AuthenticationPrincipal User user) {
+        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("UserID가 존재하지 않습니다."));
     }
     //회원정보조회 - Token으로 치환 필요
 }

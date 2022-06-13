@@ -28,7 +28,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(Long commentId, CommentDto.UpdateComment commentDto) {
+    public void updateComment(Long commentId, CommentDto.UpdateComment commentDto) {
         Comment targetComment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("INVALID CommentID"));
         targetComment.update(commentDto);
         commentRepository.save(targetComment);
