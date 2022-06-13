@@ -5,6 +5,7 @@ import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.repository.PostRepository;
+import com.blog.server.blog.security.JwtTokenProvider;
 import com.blog.server.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
