@@ -15,6 +15,18 @@ public class Response {
         @Builder.Default
         int code = 100; // 실패 Default
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Message{
+        String message;
+        @Builder.Default
+        int code = 100; // 실패 Default
+    }
+
     @Getter
     @Setter
     @Builder

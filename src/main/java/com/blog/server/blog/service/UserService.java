@@ -3,6 +3,8 @@ package com.blog.server.blog.service;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.UserDto;
+import com.blog.server.blog.excpetion.BlogException;
+import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.security.JwtTokenProvider;
 import com.blog.server.blog.validaton.Validator;
@@ -36,7 +38,7 @@ public class UserService {
 
     @Transactional
     public Response.Login login(UserDto.Login loginDto) {
-        User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다"));
+        User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new BlogException(ErrorCode.WRONG_ID));
         if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }

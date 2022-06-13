@@ -1,11 +1,14 @@
 package com.blog.server.blog.security;
 
+import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import static com.blog.server.blog.excpetion.ErrorCode.USER_NOT_EXIST;
 
 @RequiredArgsConstructor
 @Service
@@ -17,6 +20,6 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         return userRepository.findByEmail(id)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BlogException(USER_NOT_EXIST));
     }
 }

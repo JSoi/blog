@@ -3,6 +3,8 @@ package com.blog.server.blog.service;
 import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
+import com.blog.server.blog.excpetion.BlogException;
+import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class PostService {
     @Transactional
     public void addNewPost(PostDto.NewPost postDto) {
         //User 설정해주기
-        User targetUser = userRepository.findById(postDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+        User targetUser = userRepository.findById(postDto.getUser_id()).orElseThrow(() -> new BlogException(ErrorCode.USER_NOT_EXIST));
         postRepository.save(Post.builder()
                 .user(targetUser)
                 .content(postDto.getContent())
@@ -32,7 +34,7 @@ public class PostService {
     @Transactional
     public void update(Long postId, PostDto.UpdatePost updatePost, Long userId) {
         // userId는 쓰지 않지만 추후에 확장 가능할 것 같다!
-        Post targetPost = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("PostID가 존재하지 않습니다."));
+        Post targetPost = postRepository.findById(postId).orElseThrow(() -> new BlogException(ErrorCode.POST_NOT_EXIST));
         targetPost.update(updatePost);
         postRepository.save(targetPost);
     }

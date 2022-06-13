@@ -3,15 +3,14 @@ package com.blog.server.blog.controller;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.UserDto;
+import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.repository.UserRepository;
-import com.blog.server.blog.security.JwtTokenProvider;
 import com.blog.server.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import static com.blog.server.blog.excpetion.ErrorCode.USER_NOT_EXIST;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +33,6 @@ public class UserController {
 
     @GetMapping("/user")
     public User userInfo(@AuthenticationPrincipal User user) {
-        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("UserID가 존재하지 않습니다."));
+        return userRepository.findById(user.getId()).orElseThrow(() -> new BlogException(USER_NOT_EXIST));
     }
 }
