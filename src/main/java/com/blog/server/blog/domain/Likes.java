@@ -1,5 +1,7 @@
 package com.blog.server.blog.domain;
 
+import com.blog.server.blog.dto.LikesDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,15 +1,12 @@
 package com.blog.server.blog.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 public class PostDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
+    @Getter @Setter
     @Builder
     public static class NewPost {
         private Long user_id;
@@ -20,7 +17,7 @@ public class PostDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
+    @Getter @Setter
     @Builder
     public static class UpdatePost {
         private String title;

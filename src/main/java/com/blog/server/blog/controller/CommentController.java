@@ -1,12 +1,12 @@
 package com.blog.server.blog.controller;
 
+import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.CommentDto;
 import com.blog.server.blog.repository.CommentRepository;
 import com.blog.server.blog.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,21 +18,22 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public Response.Simple addComments(@RequestBody CommentDto.NewComment commentDto, @RequestHeader HttpHeaders header) {
-        log.info("token, {}", header.getFirst("X-AUTH-TOKEN"));
+    public Response.Simple addComments(@RequestBody CommentDto.NewComment commentDto, @AuthenticationPrincipal User user) {
+        commentDto.setUser_id(user.getId());
         commentService.addComment(commentDto);
         return Response.Simple.builder().result(true).code(200).build();
     }
 
     @DeleteMapping("{commentId}")
-    public Response.Simple deleteComments(@PathVariable Long commentId) {
+    public Response.Simple deleteComments(@PathVariable Long commentId, @AuthenticationPrincipal User user) {
         commentRepository.deleteById(commentId);
         return Response.Simple.builder().result(true).code(200).build();
     }
 
     @PutMapping("{commentId}")
-    public Response.Simple fixComments(@PathVariable Long commentId, @RequestBody CommentDto.UpdateComment commentDto) {
-        commentService.update(commentId, commentDto);
+    public Response.Simple fixComments(@PathVariable Long commentId, @RequestBody CommentDto.UpdateComment commentDto, @AuthenticationPrincipal User user) {
+        commentDto.setUser_id(user.getId());
+        commentService.updateComment(commentId, commentDto);
         return Response.Simple.builder().result(true).code(200).build();
     }
 }

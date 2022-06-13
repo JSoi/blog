@@ -21,16 +21,17 @@ public class LikesService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response.Simple dolike(Long postId, LikesDto likesDto) {
+    public Response.Simple doLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException("INVALID USERID"));
-        Post targetPost = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("INVALID POSTID"));
-        likesRepository.save(new Likes(targetPost, targetUser));
+        Post targetPost = postRepository.findById(likesDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("INVALID POSTID"));
+        likesRepository.save(new Likes(targetPost,targetUser));
         return Response.Simple.builder().result(true).build();
     }
 
     @Transactional
-    public Response.Simple undolike(LikesDto likesDto) {
-        Likes targetLikes = likesRepository.findById(likesDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("INVALID POSTID"));
+    public Response.Simple undoLike(LikesDto likesDto) {
+        User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(() -> new IllegalArgumentException(("INVALID USERID")));
+        Likes targetLikes = likesRepository.findByUser(targetUser).orElseThrow(() -> new IllegalArgumentException("INVALID POSTID"));
         likesRepository.delete(targetLikes);
         return Response.Simple.builder().result(true).build();
     }

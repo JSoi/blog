@@ -5,7 +5,9 @@ import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.UserDto;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.security.JwtTokenProvider;
+import com.blog.server.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,37 +18,22 @@ import java.util.Collections;
 @RequestMapping("/api")
 public class UserController {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
 
     //회원등록
     @PostMapping("/register")
     public Response.Simple register(@RequestBody UserDto.Register userRegister) {
-        User newUser = User.builder().name(userRegister.getName())
-                .nickname(userRegister.getNickname())
-                .email(userRegister.getEmail())
-                .password(passwordEncoder.encode(userRegister.getPassword()))
-                .introduce(userRegister.getIntroduce())
-                .roles(Collections.singletonList("ROLE_USER"))
-                .build();
-        userRepository.save(newUser);
-        return Response.Simple.builder().result(true).build();
+        return userService.register(userRegister);
     }
 
     //로그인
     @PostMapping("/login")
     public Response.Login login(@RequestBody UserDto.Login loginDto) {
-        User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다"));
-        if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-        }
-        String token = jwtTokenProvider.createToken(String.valueOf(targetUser.getId()), targetUser.getRoles());
-        return Response.Login.builder().result(true).token(token).nickname(targetUser.getNickname()).build();
+        return userService.login(loginDto);
     }
 
-    //회원정보조회 - Token으로 치환 필요
     @GetMapping("/user")
-    public User userInfo(@RequestBody UserDto.Info userInfo) {
-        return userRepository.findById(userInfo.getUser_id()).orElseThrow(() -> new IllegalArgumentException("UserID가 존재하지 않습니다."));
+    public User userInfo(@AuthenticationPrincipal User user) {
+        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("UserID가 존재하지 않습니다."));
     }
 }
