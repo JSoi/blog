@@ -6,6 +6,7 @@ import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.LikesDto;
 import com.blog.server.blog.excpetion.BlogException;
+import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.LikesRepository;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
@@ -27,14 +28,14 @@ public class LikesService {
     public Response.Simple doLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(() -> new BlogException(USER_NOT_EXIST));
         Post targetPost = postRepository.findById(likesDto.getPost_id()).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
-        likesRepository.save(new Likes(targetPost,targetUser));
+        likesRepository.save(new Likes(targetPost, targetUser));
         return Response.Simple.builder().result(true).build();
     }
 
     @Transactional
     public Response.Simple undoLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(() -> new BlogException(USER_NOT_EXIST));
-        Likes targetLikes = likesRepository.findByUser(targetUser).orElseThrow(() -> new BlogException(LIKE_NOT_EXIST));
+        Likes targetLikes = likesRepository.findByUser(targetUser).orElseThrow(() -> new BlogException(ErrorCode.LIKES_NOT_EXIST));
         likesRepository.delete(targetLikes);
         return Response.Simple.builder().result(true).build();
     }
