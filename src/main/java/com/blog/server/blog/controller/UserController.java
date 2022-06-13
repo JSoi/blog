@@ -6,6 +6,7 @@ import com.blog.server.blog.dto.UserDto;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,13 +41,13 @@ public class UserController {
         if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-        String token = jwtTokenProvider.createToken(String.valueOf(targetUser.getId()), targetUser.getRoles());
+        String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getRoles());
         return Response.Login.builder().result(true).token(token).nickname(targetUser.getNickname()).build();
     }
 
-    //회원정보조회 - Token으로 치환 필요
     @GetMapping("/user")
     public User userInfo(@RequestBody UserDto.Info userInfo) {
         return userRepository.findById(userInfo.getUser_id()).orElseThrow(() -> new IllegalArgumentException("UserID가 존재하지 않습니다."));
     }
+    //회원정보조회 - Token으로 치환 필요
 }
