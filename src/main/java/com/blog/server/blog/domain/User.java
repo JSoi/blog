@@ -2,6 +2,7 @@ package com.blog.server.blog.domain;
 
 
 import com.blog.server.blog.dto.UserDto;
+import com.blog.server.blog.validaton.Validator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
