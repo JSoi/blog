@@ -4,9 +4,11 @@ import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.repository.PostRepository;
+import com.blog.server.blog.security.JwtTokenProvider;
 import com.blog.server.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +20,17 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
 
+    private final JwtTokenProvider jwtTokenProvider;
     @GetMapping("/api/posts")
     public List<Post> getAllPost() { // 고치기
         return postRepository.findAll();
     }
 
     @PostMapping("/api/posts")
-    public Response.Simple addPosts(@RequestBody PostDto.NewPost post) {
+    public Response.Simple addPosts(@RequestBody PostDto.NewPost post, @RequestHeader HttpHeaders header) {
+        // post에서 token을 번역해서 id를 가져오는 일이 필요하다
+        // 이는 JwtTokenProvider.getUserPk를 통해 가져오는 게 좋을 것 같다.
+        log.info("VALUE : {}",jwtTokenProvider.getUserPk(header.getFirst("X-AUTH-TOKEN")));
         postService.addNewPost(post);
         return Response.Simple.builder().result(true).build();
     }

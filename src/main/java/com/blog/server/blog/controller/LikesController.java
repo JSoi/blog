@@ -20,7 +20,7 @@ public class LikesController {
         return likeService.dolike(postId,likesDto);
     }
 
-        @DeleteMapping("/{postId}/like")
+    @DeleteMapping("/{postId}/like")
     public Response.Simple unLike(@PathVariable Long postId, @RequestBody LikesDto likesDto) {
             likesRepository.findById(likesDto.getPost_id()).orElseThrow(() -> new IllegalArgumentException("INVALID LIKEID"));
             likesRepository.deleteById(postId);
