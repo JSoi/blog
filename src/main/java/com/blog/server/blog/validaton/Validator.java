@@ -1,5 +1,6 @@
 package com.blog.server.blog.validaton;
 
+import com.blog.server.blog.domain.User;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,12 @@ public class Validator {
         if (password.length() < 4 || password.contains(nickName)) {
             throw new BlogException(ErrorCode.BAD_PW);
         }
+    }
+    public static void validateLoginUser(User user){
+        if (user == null) {
+            throw new BlogException(ErrorCode.NEED_LOGIN_TO_LIKE);
+        }
+
     }
 
 }
