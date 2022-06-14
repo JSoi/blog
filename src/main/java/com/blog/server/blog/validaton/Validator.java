@@ -21,8 +21,8 @@ public class Validator {
     }
 
     public static void validateLoginUser(User user) {
-        if (user==null){
-            throw new BlogException(ErrorCode.NEED_LOGIN);
+        if (user == null) {
+            throw new BlogException(ErrorCode.NEED_LOGIN_TO_LIKE);
         }
     }
 }
