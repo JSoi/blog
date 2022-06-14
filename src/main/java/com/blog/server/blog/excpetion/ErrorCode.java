@@ -18,8 +18,8 @@ public enum ErrorCode {
     USER_NOT_EXIST(BAD_REQUEST, "해당 UserId는 존재하지 않습니다"),
     NEED_LOGIN_TO_LIKE(UNAUTHORIZED, "좋아요를 누르려면 로그인 해주세요"),
     NEED_LOGIN(UNAUTHORIZED, "로그인 해주세요"),
-    COMMENT_NOT_EXIST(BAD_REQUEST, "해당 CommentId는 존재하지 않습니다");
-
+    COMMENT_NOT_EXIST(BAD_REQUEST, "해당 CommentId는 존재하지 않습니다"),
+    FILE_SIZE_EXCEED(BAD_REQUEST, "파일 용량을 20MB 이하로 업로드 해주세요");
 
     private final HttpStatus httpStatus;
     private final String detail;

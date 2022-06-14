@@ -21,8 +21,8 @@ public class Post extends TimeStamped {
 
     @JsonIgnore
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

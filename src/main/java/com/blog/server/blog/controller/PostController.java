@@ -9,7 +9,6 @@ import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.service.PostService;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,24 +39,9 @@ public class PostController {
     @PostMapping("/api/posts")
     public Response.Simple addPosts(@RequestBody PostDto.NewPost post, @AuthenticationPrincipal User user) {
         postService.addNewPost(post, user);
-        return Response.Simple.builder().result(true).build();
+        return Response.Simple.builder().build();
     }
 
-    /**
-     * @return response
-     * 추후에 추가할 예정
-     */
-//    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-//    @PostMapping("/api/image")
-//    public Response.Simple addImage(@RequestParam("images") MultipartFile multipartFile, @AuthenticationPrincipal User user) {
-//        try {
-//            S3Uploader.uploadFiles(multipartFile, "static");
-//        } catch (Exception e) {
-//            return Response.Simple.builder().result(false).build();
-//        }
-//        return Response.Simple.builder().result(true).build();
-//
-//    }
 
     // 게시글 조회
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
@@ -73,7 +57,7 @@ public class PostController {
         // 여기에 자기 포스트가 아니면 삭제할 수 없는 기능을 추가하면 좋을 것 같다!
         postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
         postRepository.deleteById(postId);
-        return Response.Simple.builder().result(true).build();
+        return Response.Simple.builder().build();
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
@@ -81,7 +65,7 @@ public class PostController {
     public Response.Simple fixPost(@PathVariable Long postId, @RequestBody PostDto.UpdatePost requestDto, @AuthenticationPrincipal User user) {
         // 여기에 자기 포스트가 아니면 삭제할 수 없는 기능을 추가하면 좋을 것 같다!
         postService.update(postId, requestDto, user.getId());
-        return Response.Simple.builder().result(true).build();
+        return Response.Simple.builder().build();
     }
 
     @Data
@@ -95,7 +79,7 @@ public class PostController {
         private LocalDateTime created_at;
         private LocalDateTime modified_at;
         private String template;
-        private List<Comment> comment;
+        private List<CommentResponse> comment;
 
         public PostResponse(Post post) {
             this.nickname = post.getUser().getNickname();
@@ -106,7 +90,8 @@ public class PostController {
             this.created_at = post.getCreatedAt();
             this.modified_at = post.getModifiedAt();
             this.template = post.getTemplates();
-            this.comment = post.getCommentList();
+            //targetPostList.stream().map(PostResponse::new).collect(Collectors.toList())
+            this.comment = post.getCommentList().stream().map(CommentResponse::new).collect(Collectors.toList());
         }
     }
 

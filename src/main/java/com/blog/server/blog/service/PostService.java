@@ -1,5 +1,6 @@
 package com.blog.server.blog.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
@@ -8,7 +9,9 @@ import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
