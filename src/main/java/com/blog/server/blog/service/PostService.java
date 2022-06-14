@@ -40,5 +40,10 @@ public class PostService {
         postRepository.save(targetPost);
     }
 
+    @Transactional
+    public void plusView(Long postId) {
+        postRepository.updateView(postId);
+    }
+
 
 }

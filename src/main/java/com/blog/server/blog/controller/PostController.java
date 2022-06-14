@@ -47,6 +47,7 @@ public class PostController {
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/api/posts/{postId}")
     public PostResponse getPost(@PathVariable Long postId) {
+        postService.plusView(postId);
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
         return new PostResponse(targetPost);
     }
