@@ -7,6 +7,7 @@ import com.blog.server.blog.dto.LikesDto;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.service.LikesService;
+import com.blog.server.blog.validaton.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,16 +21,16 @@ public class LikesController {
 
     @PostMapping("/{postId}/like")
     public Response.Simple doLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        if (user == null) {
-            throw new BlogException(ErrorCode.NEED_LOGIN_TO_LIKE);
-        }
-        return likeService.doLike(LikesDto.builder().post_id(postId).user_id(user.getId()).build());
+        Validator.validateLoginUser(user);
+        LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
+        return likeService.doLike(targetLikes);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/{postId}/like")
     public Response.Simple unLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        return likeService.undoLike(LikesDto.builder().post_id(postId).user_id(user.getId()).build());
+        LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
+        return likeService.undoLike(targetLikes);
 
     }
 }

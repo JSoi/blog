@@ -1,5 +1,6 @@
 package com.blog.server.blog.validaton;
 
+import com.blog.server.blog.domain.User;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import org.springframework.stereotype.Component;
@@ -19,4 +20,9 @@ public class Validator {
         }
     }
 
+    public static void validateLoginUser(User user) {
+        if (user==null){
+            throw new BlogException(ErrorCode.NEED_LOGIN);
+        }
+    }
 }

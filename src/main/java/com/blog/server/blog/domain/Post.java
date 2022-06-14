@@ -2,6 +2,7 @@ package com.blog.server.blog.domain;
 
 import com.blog.server.blog.dto.PostDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,8 @@ import java.util.List;
 @Table(name = "post")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Post extends TimeStamped {
+
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
@@ -26,10 +29,12 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
@@ -47,6 +52,10 @@ public class Post extends TimeStamped {
     @Column
     private Long view_count = 0L;
 
+    @Column(length = 10)
+    // Left, Right, Center
+    private String templates = "Center";
+
     @Builder
     public Post(User user, String title, String content, String image_url) {
         this.user = user;
@@ -55,10 +64,10 @@ public class Post extends TimeStamped {
         this.image_url = image_url;
     }
 
-
     public void update(PostDto.UpdatePost updatePost) {
         this.title = updatePost.getTitle();
         this.content = updatePost.getContent();
         this.image_url = updatePost.getImage_url();
     }
+
 }
