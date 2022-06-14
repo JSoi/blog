@@ -51,14 +51,17 @@ public class User extends TimeStamped implements UserDetails {
     @Column
     private String profile_image_url;
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();

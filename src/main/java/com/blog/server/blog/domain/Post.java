@@ -29,10 +29,12 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Likes> likesList = new ArrayList<>();
 
+    @JsonIgnore
     @Column
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
@@ -52,7 +54,7 @@ public class Post extends TimeStamped {
 
     @Column(length = 10)
     // Left, Right, Center
-    private String position = "Center";
+    private String templates = "Center";
 
     @Builder
     public Post(User user, String title, String content, String image_url) {
