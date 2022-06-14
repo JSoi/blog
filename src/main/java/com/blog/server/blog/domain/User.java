@@ -1,9 +1,8 @@
 package com.blog.server.blog.domain;
 
 
-import com.blog.server.blog.dto.UserDto;
-import com.blog.server.blog.validaton.Validator;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,11 +25,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @Table(name = "user")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class User extends TimeStamped implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true)
     private Long id;
 
     @Column(nullable = false, length = 10)
@@ -39,10 +38,18 @@ public class User extends TimeStamped implements UserDetails {
     private String nickname;
 
     @Column(nullable = false, unique = true, length = 20)
+    @Email(message = "올바른 이메일 형식을 입력해 주세요")
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
+
+    @Column
+    private String introduce;
+
+    @Column
+    private String profile_image_url;
 
     @Column
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -55,9 +62,6 @@ public class User extends TimeStamped implements UserDetails {
     @Column
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> postList = new ArrayList<>();
-
-    @Column
-    private String introduce;
 
 
     @ElementCollection(fetch = FetchType.EAGER)

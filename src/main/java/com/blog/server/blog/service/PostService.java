@@ -8,8 +8,6 @@ import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,8 +19,8 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void addNewPost(PostDto.NewPost postDto) {
-        //User 설정해주기
+    public void addNewPost(PostDto.NewPost postDto, User user) {
+        postDto.setUser_id(user.getId());
         User targetUser = userRepository.findById(postDto.getUser_id()).orElseThrow(() -> new BlogException(ErrorCode.USER_NOT_EXIST));
         postRepository.save(Post.builder()
                 .user(targetUser)

@@ -38,11 +38,12 @@ public class UserService {
 
     @Transactional
     public Response.Login login(UserDto.Login loginDto) {
-        User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new BlogException(ErrorCode.WRONG_ID));
+        User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(()
+                -> new BlogException(ErrorCode.WRONG_ID));
         if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
             throw new BlogException(ErrorCode.BAD_LOGIN);
         }
-        String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getId(), targetUser.getRoles());
+        String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getRoles());
         return Response.Login.builder().result(true).token(token).nickname(targetUser.getNickname()).build();
     }
 }
