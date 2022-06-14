@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class='uploadDiv'>
+    <input type='file' name='uploadFile'>
+</div>
+<button id='uploadBtn'>Submit</button>
+</body>
+<script>
+    var cloneObj = $(".uploadDiv").clone();
+    $("#uploadBtn").on("click", function (e) {
+            const formData = new FormData();
+            const inputFile = $("input[name='uploadFile']");
+            const files = inputFile.files;
+            $.ajax({
+                url: '/uploadAjaxAction',
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    showUploadedFile(result);
+                    $(".uploadDiv").html(cloneObj.html());
+                    alert("Uploaded");
+                }
+            }); // ajax end
+        });// uploadbutton end
+</script>
+</html>
