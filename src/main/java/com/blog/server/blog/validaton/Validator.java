@@ -3,7 +3,9 @@ package com.blog.server.blog.validaton;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.regex.Pattern;
 
@@ -20,9 +22,23 @@ public class Validator {
         }
     }
 
-    public static void validateLoginUser(User user) {
+    public static void validateUserInput(String userInput){
+        // XSS 방어
+
+        throw new BlogException(ErrorCode.BAD_INPUT);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public static void validateLoginUser(User user, ErrorCode code) {
         if (user == null) {
-            throw new BlogException(ErrorCode.NEED_LOGIN_TO_LIKE);
+            throw new BlogException(code);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.LOCKED)
+    public static void alreadyLoggedIn(User user, ErrorCode code) {
+        if (user != null) {
+            throw new BlogException(code);
         }
     }
 }

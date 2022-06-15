@@ -13,7 +13,10 @@ import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+
+import java.util.Optional;
 
 import static com.blog.server.blog.excpetion.ErrorCode.*;
 
@@ -28,12 +31,17 @@ public class LikesService {
     public Response.Simple doLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(()
                 -> new BlogException(USER_NOT_EXIST));
-
         Post targetPost = postRepository.findById(likesDto.getPost_id()).orElseThrow(()
                 -> new BlogException(POST_NOT_EXIST));
 
-        likesRepository.save(new Likes(targetPost, targetUser));
-
+        Optional<Likes> targetLikes = likesRepository.findByPostAndUser(targetPost, targetUser);
+        if (targetLikes.isPresent()) {
+            likesRepository.delete(targetLikes.get());
+            postRepository.updateLikeCount(targetPost.getId(), -1L);
+        } else {
+            likesRepository.save(new Likes(targetPost, targetUser));
+            postRepository.updateLikeCount(targetPost.getId(), 1L);
+        }
         return Response.Simple.builder().result(true).build();
     }
 
@@ -43,7 +51,7 @@ public class LikesService {
                 -> new BlogException(USER_NOT_EXIST));
 
         Likes targetLikes = likesRepository.findByUser(targetUser).orElseThrow(()
-                -> new BlogException(ErrorCode.LIKES_NOT_EXIST));
+                -> new BlogException(LIKES_NOT_EXIST));
 
         likesRepository.delete(targetLikes);
 
