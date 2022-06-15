@@ -17,7 +17,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "post")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Post extends TimeStamped {
 
@@ -42,16 +41,13 @@ public class Post extends TimeStamped {
     private List<Comment> commentList = new ArrayList<>();
 
     @Column(nullable = false, length = 25)
-    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String title;
 
     @Column(nullable = false)
     @Lob
-    @NotBlank(message = "빈 칸을 입력하지 마세요")
-    private String content;
+   private String content;
 
     @Column(nullable = false)
-    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String image_url;
 
     @Column(name = "view_count")
