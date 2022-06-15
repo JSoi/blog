@@ -23,16 +23,13 @@ public class CommentService {
 
     @Transactional
     public void addComment(Long id, CommentDto.NewComment newCommentDto) {
-        newCommentDto.setUser_id(id);
-
-        Post targetPost = postRepository.findById(newCommentDto.getPost_id()).orElseThrow(()
+        Post targetPost = postRepository.findById(id).orElseThrow(()
                 -> new BlogException(ErrorCode.POST_NOT_EXIST));
 
-        User user = userRepository.findById(newCommentDto.getUser_id()).orElseThrow(()
+        User user = userRepository.findById(id).orElseThrow(()
                 -> new BlogException(ErrorCode.USER_NOT_EXIST));
 
         commentRepository.save(new Comment(targetPost, user, newCommentDto.getContent()));
-
     }
 
     @Transactional

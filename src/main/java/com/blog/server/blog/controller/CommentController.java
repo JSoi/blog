@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
@@ -19,10 +21,10 @@ public class CommentController {
     private final CommentRepository commentRepository;
     private final CommentService commentService;
 
-    @PostMapping
-    public Response.Simple addComments(@RequestBody CommentDto.NewComment commentDto, @AuthenticationPrincipal User user) {
+    @PostMapping("{postId}")
+    public Response.Simple addComments(@PathVariable Long postId, @Valid @RequestBody CommentDto.NewComment commentDto, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        commentService.addComment(user.getId(),commentDto);
+        commentService.addComment(postId, commentDto);
         return Response.Simple.builder().build();
     }
 
@@ -34,7 +36,7 @@ public class CommentController {
     }
 
     @PutMapping("{commentId}")
-    public Response.Simple fixComments(@PathVariable Long commentId, @RequestBody CommentDto.UpdateComment commentDto,
+    public Response.Simple fixComments(@PathVariable Long commentId, @Valid @RequestBody CommentDto.UpdateComment commentDto,
                                        @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         commentService.updateComment(commentId, commentDto);

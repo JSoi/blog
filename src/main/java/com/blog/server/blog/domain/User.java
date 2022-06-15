@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -39,8 +40,6 @@ public class User extends TimeStamped implements UserDetails {
     private String nickname;
 
     @Column(nullable = false, unique = true, length = 20)
-    @Email(message = "올바른 이메일 형식을 입력해 주세요")
-    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String email;
 
     @JsonIgnore

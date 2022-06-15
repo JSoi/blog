@@ -42,7 +42,7 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public Response.Simple addPosts(@RequestBody PostDto.NewPost post, @AuthenticationPrincipal User user) {
+    public Response.Simple addPosts(@Valid @RequestBody PostDto.NewPost post, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         postService.addNewPost(post, user);
         return Response.Simple.builder().build();

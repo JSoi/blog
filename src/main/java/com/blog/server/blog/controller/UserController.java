@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 
@@ -27,14 +28,14 @@ public class UserController {
 
     //회원등록
     @PostMapping("/register")
-    public Response.Simple register(@RequestBody UserDto.Register userRegister, @AuthenticationPrincipal User user) {
+    public Response.Simple register(@Valid @RequestBody UserDto.Register userRegister, @AuthenticationPrincipal User user) {
         Validator.alreadyLoggedIn(user, ErrorCode.ALREADY_LOGGED_IN);
         return userService.register(userRegister);
     }
 
     //로그인
     @PostMapping("/login")
-    public Response.Login login(@RequestBody UserDto.Login loginDto, @AuthenticationPrincipal User user) {
+    public Response.Login login(@Valid @RequestBody UserDto.Login loginDto, @AuthenticationPrincipal User user) {
         Validator.alreadyLoggedIn(user, ErrorCode.ALREADY_LOGGED_IN);
         return userService.login(loginDto);
     }

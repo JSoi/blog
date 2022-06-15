@@ -32,6 +32,9 @@ public class ErrorResponse {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .error(HttpStatus.BAD_REQUEST.name())
+                        .code(HttpStatus.BAD_REQUEST.name())
                         .message(errorMessage)
                         .build()
                 );

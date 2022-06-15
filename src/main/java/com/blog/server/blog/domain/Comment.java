@@ -31,7 +31,6 @@ public class Comment extends TimeStamped {
     private User user;
 
     @Column
-    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String content;
 
     @Builder
