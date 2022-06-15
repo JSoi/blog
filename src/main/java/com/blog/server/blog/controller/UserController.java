@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
 public class UserController {
     private final UserRepository userRepository;

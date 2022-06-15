@@ -47,11 +47,11 @@ CORS
 
 ## ERD
 
+[노션 링크](https://teamsparta.notion.site/4-c4ddea873ddd41ad94bd215f2743598c)
+
 ![dd](https://user-images.githubusercontent.com/17975647/173787724-fa53b884-848d-469f-a4de-aef047f6c57b.png)
 
 
-
-- [노션 링크](https://teamsparta.notion.site/4-c4ddea873ddd41ad94bd215f2743598c)
 
 
 
@@ -59,7 +59,7 @@ CORS
 
 ## REST API
 
-
+- [노션 링크](https://teamsparta.notion.site/4-c4ddea873ddd41ad94bd215f2743598c)
 
 | 분류   | 기능          | Method | Endpoint                  | request | response_true | resposne_false |
 | ------ | ------------- | ------ | ------------------------- | ------- | ------------- | -------------- |
@@ -77,7 +77,11 @@ CORS
 |        | 로그인        | POST   | /api/login                | {<br/>email:[String]<br/>password:[String]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
 |        | 회원정보 조회 | GET    | /api/user                 | - | {<br/> name:[String],<br/> nickname:[String],<br/> email:[String],<br/> introduce:[String],<br/> profile_image_url:[String],<br/> createdAt:[Datetime]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
 
+
+
 #### 첨부 #1 : 게시글 조회의 Response_true
+
+
 
 ```json
 {
@@ -95,7 +99,7 @@ post :
      created_at : [Datetime],
      modified_at : [Datetime],
 	 template:[’Left’|’Right’|’Center’]
-}[List]
+} [List]
 comment :
 	{
      comment_id:[Long],

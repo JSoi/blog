@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LikesController {
     private final LikesService likeService;
 

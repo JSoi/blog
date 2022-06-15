@@ -28,6 +28,7 @@ import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
