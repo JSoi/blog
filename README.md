@@ -42,13 +42,6 @@
      - view 순
 
 
-
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-###  DTO가 길어진다
-=======
-=======
->>>>>>> feature/api
 ## ERD
 
 [노션 링크](https://teamsparta.notion.site/4-c4ddea873ddd41ad94bd215f2743598c)
