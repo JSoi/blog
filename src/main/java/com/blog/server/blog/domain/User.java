@@ -8,14 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +36,6 @@ public class User extends TimeStamped implements UserDetails {
     private String name;
 
     @Column(nullable = false, length = 20)
-    @Min(value = 3,message = "별명은 3자 이상 입력해 주세요")
     private String nickname;
 
     @Column(nullable = false, unique = true, length = 20)
