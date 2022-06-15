@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -30,6 +31,7 @@ public class Comment extends TimeStamped {
     private User user;
 
     @Column
+    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String content;
 
     @Builder

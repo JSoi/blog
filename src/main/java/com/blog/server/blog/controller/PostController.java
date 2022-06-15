@@ -6,17 +6,20 @@ import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.excpetion.BlogException;
+import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.service.PostService;
+import com.blog.server.blog.validaton.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,45 +28,49 @@ import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
 
     @GetMapping("/api/posts")
     public List<PostResponse> getAllPost() { // 고치기
-        List<Post> targetPostList = postRepository.findAll();
-        return targetPostList.stream().map(PostResponse::new).collect(Collectors.toList());
+        List<Post> targetPostList = postRepository.findAllByOrderByLikeCountDesc();
+        List<PostResponse> result = new ArrayList<>();
+        targetPostList.forEach(p -> result.add(new PostResponse(p)));
+        return result;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @PostMapping("/api/posts")
     public Response.Simple addPosts(@RequestBody PostDto.NewPost post, @AuthenticationPrincipal User user) {
+        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         postService.addNewPost(post, user);
         return Response.Simple.builder().build();
     }
 
 
     // 게시글 조회
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/api/posts/{postId}")
-    public PostResponse getPost(@PathVariable Long postId) {
+    public PostResponse getPost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
+        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
+        postService.plusView(postId); // 조회 시 View가 하나 올라가는 함수
         return new PostResponse(targetPost);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+
     @DeleteMapping("/api/posts/{postId}")
     public Response.Simple deletePost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        // 여기에 자기 포스트가 아니면 삭제할 수 없는 기능을 추가하면 좋을 것 같다!
+        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
         postRepository.deleteById(postId);
         return Response.Simple.builder().build();
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/api/posts/{postId}")
-    public Response.Simple fixPost(@PathVariable Long postId, @RequestBody PostDto.UpdatePost requestDto, @AuthenticationPrincipal User user) {
-        // 여기에 자기 포스트가 아니면 삭제할 수 없는 기능을 추가하면 좋을 것 같다!
+    public Response.Simple fixPost(@PathVariable Long postId, @Valid @RequestBody PostDto.UpdatePost requestDto,
+                                   @AuthenticationPrincipal User user) {
+        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         postService.update(postId, requestDto, user.getId());
         return Response.Simple.builder().build();
     }
@@ -71,15 +78,11 @@ public class PostController {
     @Data
     @AllArgsConstructor
     static class PostResponse {
-        private String nickname;
-        private Long post_id; // query 해야될듯 ^^;
-        private String title;
-        private String content;
-        private String image_url;
-        private LocalDateTime created_at;
-        private LocalDateTime modified_at;
-        private String template;
+        private String nickname, template, image_url, content, title;
+        private Long post_id, like_count,view_count; // query 해야될듯 ^^;
+        private LocalDateTime created_at, modified_at;
         private List<CommentResponse> comment;
+
 
         public PostResponse(Post post) {
             this.nickname = post.getUser().getNickname();
@@ -90,18 +93,18 @@ public class PostController {
             this.created_at = post.getCreatedAt();
             this.modified_at = post.getModifiedAt();
             this.template = post.getTemplates();
-            //targetPostList.stream().map(PostResponse::new).collect(Collectors.toList())
+            this.view_count = post.getViewCount();
             this.comment = post.getCommentList().stream().map(CommentResponse::new).collect(Collectors.toList());
+            this.like_count = (long) post.getLikesList().size();
         }
     }
 
     @Data
     @AllArgsConstructor
-    static class CommentResponse {
+    public static class CommentResponse {
         private Long comment_id;
         private String content;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
+        private LocalDateTime createdAt, modifiedAt;
 
         public CommentResponse(Comment comment) {
             this.comment_id = comment.getId();

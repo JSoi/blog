@@ -1,5 +1,6 @@
 package com.blog.server.blog.dto;
 
+import com.blog.server.blog.domain.Likes;
 import lombok.*;
 
 public class PostDto {

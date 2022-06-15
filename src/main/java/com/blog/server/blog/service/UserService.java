@@ -31,6 +31,7 @@ public class UserService {
                 .password(passwordEncoder.encode(userRegister.getPassword()))
                 .introduce(userRegister.getIntroduce())
                 .roles(Collections.singletonList("ROLE_USER"))
+                .profile_image_url(userRegister.getProfile_image_url())
                 .build();
         userRepository.save(newUser);
         return Response.Simple.builder().result(true).build();

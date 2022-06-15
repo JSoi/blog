@@ -1,7 +1,9 @@
+
+
+
+
 # Blog-Server
 
-<<<<<<< Updated upstream
-=======
 ### 목차
 
 [요구 사항 ](## 요구사항)
@@ -16,13 +18,10 @@
 
 [인증/인가 ](##인증, 인가)
 
-[CORS]( ##CORS)
-
 
 
 ## 요구사항
 
->>>>>>> Stashed changes
 1. 회원 가입 페이지
    - 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기
    - 비밀번호는 `최소 4자 이상이며, 닉네임과 같은 값이 포함된 경우 회원가입에 실패`로 만들기
@@ -33,20 +32,23 @@
    - 로그인 하지 않은 사용자도, 게시글 목록 조회는 가능하도록 하기
    - 로그인하지 않은 사용자가 좋아요 버튼을 눌렀을 경우, "로그인이 필요합니다." 라는 메시지를 띄울 수 있게 예외 처리한다.
    - 로그인 한 사용자가 로그인 페이지 또는 회원가입 페이지에 접속한 경우 "이미 로그인이 되어있습니다."라는 메세지로 예외 처리하기
-   - 인증 인가를 어떤 개념(Token/Session)을 채택 했는지, 그 이유에 대해서 설명하기
+   - <u>**인증 인가를 어떤 개념(Token/Session)을 채택 했는지, 그 이유에 대해서 설명**</u>하기
 4. CORS 해결하기
-   - CORS란 무엇이며, 어떤 상황에서 일어나는지 / 어떻게 해결하는지 알아보고, 프로젝트에 적용하기
+   - **<u>CORS란 무엇이며, 어떤 상황에서 일어나는지 / 어떻게 해결하는지 알아보고, 프로젝트에 적용하기</u>**
 5. 좋아요 순 정렬(정렬하기는 꼭 해봐야 하는 건데 과제에 없다)
    - 정렬 기준 중 하나를 선택해주세요!
      - 생성일 순
-     - 좋아요 순
+     - 좋아요 순✔
      - view 순
 
 
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 ###  DTO가 길어진다
 =======
+=======
+>>>>>>> feature/api
 ## ERD
 
 [노션 링크](https://teamsparta.notion.site/4-c4ddea873ddd41ad94bd215f2743598c)
@@ -169,6 +171,7 @@ comment :
 
 ## 인증, 인가
 
+
 #### 인증
 
 - 유저가 누구인지 확인하는 절차이다 - 어떤 개체(사용자 또는 장치)의 신원을 확인하는 과정
@@ -198,6 +201,7 @@ comment :
 
 
 
+
 ## CORS
 
 **(Cross-Origin Resource Sharing,CORS)** 란 다른 출처의 자원을 공유할 수 있도록 설정하는 권한 체제이다
@@ -207,6 +211,7 @@ comment :
 Spring Boot에서 CORS 설정하기
 
 1. Configuration 적용하기
+<<<<<<< HEAD
 2. Annotation Controller에 붙이기 ```@CrossOrigin(origins = "*", allowedHeaders = "*")```
 
 에서 좀 더 간단한 2번을 선택하여 구현하였다. 아직 검증해 보지 않아서 작동하지 않으면 1번의 방법으로 수정할 예정이다.
@@ -214,24 +219,91 @@ Spring Boot에서 CORS 설정하기
 
 
 ## My Issue
->>>>>>> Stashed changes
 
-수많은 DTO.. 
-취향 차이일 것 같다.
-static을 지양해야 할 것 같기도 하고 나는 모르겠따~~
 
-### DTO에 Setter가 들어가는 것을 권장하지 않는다
 
-### ResponseBody의 검증
-[참고링크](https://velog.io/@gillog/Valid%EB%A1%9C-RequestBody-%EA%B2%80%EC%A6%9D%ED%95%98%EA%B8%B0)
+###  DTO가 너무 많아진다
+
+구현을 진행할수록 너무 많은 DTO가 생기고, 유사한 이름들이 많아지면서 헷갈리기 시작했다.
+
+검색을 해보니 DTO 클래스 내에 static으로 선언해서 static member class로 쓰는 방식이 있었고, 이를 이번 과제에 적용해 보았다.
+
+**[코드 - DTO]**
+
+```java
+public class CommentDto {
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter @Setter
+    @Builder
+    public static class NewComment {
+        Long user_id;
+        Long post_id;
+        String content;
+    }
+```
+**[코드 - Service에서의 static member class 적용]**
+
+```java
+@Transactional
+public void addComment(Long id, CommentDto.NewComment newCommentDto) { // CommentDto.NewComment를 쓴다!
+```
+
+
+
+Inner class를 적용하기 위해서는 static을 꼭 붙여 주어야 한다.
+
+
+
+**만약 <u>일반 내부 클래스</u>를 쓰게 되면?**
+
+👎 1) 자신을 호출한 클래스에 대한 참조를 하게 되고 , 시간/공간적으로 성능이 낮아진다
+
+👎 2) GC가 수거하지 못해 메모리 누수가 생긴다.
+
+
+
+### 엔티티 대신 DTO로 Respose 보내기
+
+저번 주에는 Response를 반환할 때 엔티티를 그대로 외부에 노출했다(Post, Comment 등...)
+
+이번에는 조회 시에 필요로 하는 필드만 뽑아서 DTO를 만들어 보았다.
+
+**[코드]**
+
+```java
+@Data
+@AllArgsConstructor
+public static class CommentResponse {
+    private Long comment_id;
+    private String content;
+    private LocalDateTime createdAt, modifiedAt;
+
+    public CommentResponse(Comment comment) {
+        this.comment_id = comment.getId();
+        this.content = comment.getContent();
+        this.createdAt = comment.getCreatedAt();
+        this.modifiedAt = comment.getModifiedAt();
+
+    }
+}
+```
+
+**[결과]**
+
+조금 더 깔끔해진 것을 볼  수 있다.
+
+![image](https://user-images.githubusercontent.com/17975647/173811467-57a8ea9f-4e0f-422b-a03b-2dc1ad399769.png)
+
+원하는 데이터 형식으로 뽑아내기에 적합한 것 같다.
+
+만약 프론트에서 원하는 Response 형태가 있다면 그에 맞춰서 보내 줄 수 있다.
 
 
 
 ### 예외 처리
 
-<<<<<<< Updated upstream
-### CORS
-=======
+
 예외 처리는 전과 같이 RestControllerAdvice를 사용했다. 
 
 RestControllerAdvice를 사용한 전반적인 예외 처리
@@ -294,24 +366,27 @@ void updateLikeCount(Long id, Long value);
 
 ## 더 해야할 것
 
-연관관계가 늘어나면서 쿼리문이 늘어나고 심지어는 N+1 문제가 일어나기도 한다.
+연관관계가 늘어나면서 쿼리문이 늘어나고 심지어는N+1 문제가 일어나기도 한다.
+
+
 
 이를 해결하기 위해서는 
 
 - Fetch Join
 - Lazy Loading
->>>>>>> Stashed changes
-
-### 양방향을 하고 말고
-
-### 엔티티를 외부에 노출하는 것은 좋지 않다
-이전 과제에서는 엔티티를 그대로 외부에 노출했다
-API가 필요로하는 필드만 뽑아서 DTO를 만들어 보자!
-
-### Service의 비즈니스 로직
-서비스와 컨트롤러는 서로 근접해있는 영역이기 때문에 역할 분리가 모호하다.
-service에는 비즈니스 로직이 들어간다고 하는데, 
 
 
+등이 필요하다. 
 
-인증 인가를 어떤 개념(Token/Session)을 채택 했는지, 그 이유에 대해서 설명하기
+Fetch Join을 할 때 User같이 ToMany가 여러 개 인 경우에는 어떻게 해야 할지 고민이 많았는데, 아래의 조건을 사용하면 될 것 같다.
+
+>Fetch Join의 조건은 다음과 같습니다.
+>
+>- **ToOne은 몇개든** 사용 가능합니다
+>- **ToMany는 1개만** 가능합니다.
+>- 보통 해결책은 하나만 fetch join 합니다.
+
+해당 조건을 기반으로 이번 기회에 적용해 보려고 했는데, 댓글까지 추가적으로 구현하는 바람에 연관 관계가 조금 더 복잡해져 시간이 더 걸릴 것 같다.
+
+그래서 DTO로 쿼리를 날리는 방법을 해 보고 있었는데 진행이 어렵다. 이런 경우 QueryDSL을 쓰기도 한다는데..허허 😅 더 공부해야겠다.
+
