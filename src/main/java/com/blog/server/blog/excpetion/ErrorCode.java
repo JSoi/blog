@@ -21,8 +21,8 @@ public enum ErrorCode {
     COMMENT_NOT_EXIST(BAD_REQUEST, "해당 CommentId는 존재하지 않습니다"),
     FILE_SIZE_EXCEED(BAD_REQUEST, "파일 용량을 20MB 이하로 업로드 해주세요"),
     ALREADY_LOGGED_IN(LOCKED, "이미 로그인 되어있습니다"),
-    BAD_INPUT(BAD_REQUEST, "불필요한 값이 포함되어 있습니다. 다시 확인해 주세요");
-
+    BAD_INPUT(BAD_REQUEST, "불필요한 값이 포함되어 있습니다. 다시 확인해 주세요"),
+    EXIST_EMAIL(BAD_REQUEST, "중복된 아이디입니다");
     private final HttpStatus httpStatus;
     private final String detail;
 }

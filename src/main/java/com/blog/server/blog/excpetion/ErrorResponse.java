@@ -2,6 +2,7 @@ package com.blog.server.blog.excpetion;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,15 @@ public class ErrorResponse {
                         .error(errorCode.getHttpStatus().name())
                         .code(errorCode.name())
                         .message(errorCode.getDetail())
+                        .build()
+                );
+    }
+
+    public static ResponseEntity<ErrorResponse> argumentErrors(String errorMessage) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .message(errorMessage)
                         .build()
                 );
     }

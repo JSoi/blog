@@ -24,6 +24,9 @@ public class UserService {
 
     @Transactional
     public Response.Simple register(UserDto.Register userRegister) {
+        if(userRepository.existsUserByEmail(userRegister.getEmail())){
+            throw new BlogException(ErrorCode.EXIST_EMAIL);
+        }
         Validator.validateRegisterUser(userRegister.getNickname(), userRegister.getPassword());
         User newUser = User.builder().name(userRegister.getName())
                 .nickname(userRegister.getNickname())
@@ -33,6 +36,7 @@ public class UserService {
                 .roles(Collections.singletonList("ROLE_USER"))
                 .profile_image_url(userRegister.getProfile_image_url())
                 .build();
+
         userRepository.save(newUser);
         return Response.Simple.builder().result(true).build();
     }
