@@ -21,16 +21,17 @@ public class LikesController {
 
     @PostMapping("/{postId}/like")
     public Response.Simple doLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        Validator.validateLoginUser(user);
+        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN_TO_LIKE);
         LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
         return likeService.doLike(targetLikes);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    @DeleteMapping("/{postId}/like")
-    public Response.Simple unLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
-        LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
-        return likeService.undoLike(targetLikes);
-
-    }
+//    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+//    @DeleteMapping("/{postId}/like")
+//    public Response.Simple unLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
+//        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
+//        LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
+//        return likeService.undoLike(targetLikes);
+//
+//    }
 }

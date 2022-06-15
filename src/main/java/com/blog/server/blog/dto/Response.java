@@ -2,33 +2,33 @@ package com.blog.server.blog.dto;
 
 import lombok.*;
 
-
+/**
+ * 문제가 있을 때는 대부분 Exception에서 처리된다.
+ * 그래서 성공하는 케이스를 Default로 설정하였다!
+ * */
 public class Response {
-    @Getter
-    @Setter
+    @Getter @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Simple {
         @Builder.Default
-        boolean result = false;
+        boolean result = true;
         @Builder.Default
-        int code = 100; // 실패 Default
+        int code = 202; // 성공 Default
     }
 
-    @Getter
-    @Setter
+    @Getter @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Message {
         String message;
         @Builder.Default
-        int code = 100; // 실패 Default
+        int code = 202;
     }
 
-    @Getter
-    @Setter
+    @Getter @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
@@ -40,8 +40,7 @@ public class Response {
     }
 
 
-    @Getter
-    @Setter
+    @Getter @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor

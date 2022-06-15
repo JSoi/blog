@@ -16,6 +16,7 @@ public class UserDto {
         private String email;
         private String password;
         private String introduce;
+        private String profile_image_url;
     }
     @AllArgsConstructor
     @NoArgsConstructor

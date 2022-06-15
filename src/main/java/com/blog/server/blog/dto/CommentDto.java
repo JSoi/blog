@@ -5,7 +5,8 @@ import lombok.*;
 public class CommentDto {
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter @Setter
+    @Getter
+    @Setter
     @Builder
     public static class NewComment {
         Long user_id;
@@ -15,7 +16,8 @@ public class CommentDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter @Setter
+    @Getter
+    @Setter
     @Builder
     public static class DeleteComment {
         Long user_id;
@@ -25,7 +27,8 @@ public class CommentDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter @Setter
+    @Getter
+    @Setter
     @Builder
     public static class UpdateComment {
         Long post_id;

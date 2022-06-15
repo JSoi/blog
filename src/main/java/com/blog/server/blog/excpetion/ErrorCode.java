@@ -19,7 +19,9 @@ public enum ErrorCode {
     NEED_LOGIN_TO_LIKE(UNAUTHORIZED, "좋아요를 누르려면 로그인 해주세요"),
     NEED_LOGIN(UNAUTHORIZED, "로그인 해주세요"),
     COMMENT_NOT_EXIST(BAD_REQUEST, "해당 CommentId는 존재하지 않습니다"),
-    FILE_SIZE_EXCEED(BAD_REQUEST, "파일 용량을 20MB 이하로 업로드 해주세요");
+    FILE_SIZE_EXCEED(BAD_REQUEST, "파일 용량을 20MB 이하로 업로드 해주세요"),
+    ALREADY_LOGGED_IN(LOCKED, "이미 로그인 되어있습니다"),
+    BAD_INPUT(BAD_REQUEST, "불필요한 값이 포함되어 있습니다. 다시 확인해 주세요");
 
     private final HttpStatus httpStatus;
     private final String detail;

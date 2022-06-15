@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "post")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Post extends TimeStamped {
 
@@ -40,17 +42,23 @@ public class Post extends TimeStamped {
     private List<Comment> commentList = new ArrayList<>();
 
     @Column(nullable = false, length = 25)
+    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String title;
 
     @Column(nullable = false)
     @Lob
+    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String content;
 
     @Column(nullable = false)
+    @NotBlank(message = "빈 칸을 입력하지 마세요")
     private String image_url;
 
-    @Column
-    private Long view_count = 0L;
+    @Column(name = "view_count")
+    private Long viewCount = 0L;
+
+    @Column(name = "like_count")
+    private Long likeCount = 0L;
 
     @Column(length = 10)
     // Left, Right, Center
@@ -62,6 +70,7 @@ public class Post extends TimeStamped {
         this.title = title;
         this.content = content;
         this.image_url = image_url;
+
     }
 
     public void update(PostDto.UpdatePost updatePost) {
