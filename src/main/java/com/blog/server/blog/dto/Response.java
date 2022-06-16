@@ -1,9 +1,6 @@
 package com.blog.server.blog.dto;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * 문제가 있을 때는 대부분 Exception에서 처리된다.
@@ -39,7 +36,7 @@ public class Response {
     public static class Login {
         @Builder.Default
         boolean result = true;
-        String token;
+        String userToken;
         String nickname;
     }
 

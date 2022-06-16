@@ -11,6 +11,7 @@ import com.blog.server.blog.validaton.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;

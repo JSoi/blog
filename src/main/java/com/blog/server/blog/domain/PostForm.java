@@ -15,5 +15,5 @@ public class PostForm {
     @NotBlank(message = "내용에 값을 입력하세요")
     private String content;
     private MultipartFile image = null;
-    private Long template = 0L;
+    private Long template = 1L;
 }

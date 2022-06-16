@@ -12,12 +12,14 @@ import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.service.PostService;
 import com.blog.server.blog.validaton.Validator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -36,6 +38,7 @@ import static com.blog.server.blog.excpetion.ErrorCode.USER_NOT_EXIST;
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class PostController {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -57,6 +60,7 @@ public class PostController {
     private void findPostListByLoggedInUser(List<Post> targetPostList, List<PostResponse> result, User user) {
         for (Post p : targetPostList) {
             PostResponse pr = new PostResponse(p);
+            pr.setNickname(p.getUser().getNickname());
             pr.setLikeByMe(likesRepository.existsLikesByPostAndUser(p, user));
             result.add(pr);
         }
@@ -110,13 +114,13 @@ public class PostController {
         private Long id, likeCount, viewCount, template; // query 해야될듯 ^^;
         private String nickname, imageUrl, content, title;
         private LocalDateTime createdAt, modifiedAt;
+
         private List<CommentResponse> comment;
         ////추가하기
         private boolean likeByMe = false;
 
 
         public PostResponse(Post post) {
-            this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.id = post.getId();
             this.content = post.getContent();
@@ -133,12 +137,12 @@ public class PostController {
     @Data
     @AllArgsConstructor
     public static class CommentResponse {
-        private Long commentId;
+        private Long id;
         private String content;
         private LocalDateTime createdAt, modifiedAt;
 
         public CommentResponse(Comment comment) {
-            this.commentId = comment.getId();
+            this.id = comment.getId();
             this.content = comment.getContent();
             this.createdAt = comment.getCreatedAt();
             this.modifiedAt = comment.getModifiedAt();

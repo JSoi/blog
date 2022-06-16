@@ -9,6 +9,7 @@ import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.service.LikesService;
 import com.blog.server.blog.validaton.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class LikesController {
     private final LikesService likeService;
 
