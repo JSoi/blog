@@ -6,6 +6,7 @@ import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
+import com.blog.server.blog.repository.LikesRepository;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
+import java.util.List;
+
+import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikesRepository likesRepository;
 
     @Transactional
     public void addNewPost(PostDto.NewPost postDto, User user) {
@@ -29,7 +35,7 @@ public class PostService {
                 .user(targetUser)
                 .content(postDto.getContent())
                 .title(postDto.getTitle())
-                .image_url(postDto.getImage_url()).build());
+                .imageUrl(postDto.getImage_url()).build());
     }
 
     @Transactional
@@ -42,8 +48,9 @@ public class PostService {
 
     @Transactional
     public void plusView(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new BlogException(POST_NOT_EXIST);
+        }
         postRepository.updateView(postId);
     }
-
-
 }

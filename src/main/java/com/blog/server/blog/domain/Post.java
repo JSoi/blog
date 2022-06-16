@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,34 +44,30 @@ public class Post extends TimeStamped {
 
     @Column(nullable = false)
     @Lob
-   private String content;
+    private String content;
 
-    @Column(nullable = false)
-    private String image_url;
+    private String imageUrl;
 
-    @Column(name = "view_count")
     private Long viewCount = 0L;
 
-    @Column(name = "like_count")
     private Long likeCount = 0L;
 
-    @Column(length = 10)
-    // Left, Right, Center
-    private String templates = "Center";
+    // Left(1), Right(2), Center(3)
+    private Long templates = 1L;
 
     @Builder
-    public Post(User user, String title, String content, String image_url) {
+    public Post(User user, String title, String content, String imageUrl) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.image_url = image_url;
+        this.imageUrl = imageUrl;
 
     }
 
     public void update(PostDto.UpdatePost updatePost) {
         this.title = updatePost.getTitle();
         this.content = updatePost.getContent();
-        this.image_url = updatePost.getImage_url();
+        this.imageUrl = updatePost.getImage_url();
     }
 
 }
