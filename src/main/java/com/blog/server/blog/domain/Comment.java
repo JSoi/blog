@@ -22,12 +22,12 @@ public class Comment extends TimeStamped {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "postId")
     private Post post;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @Column

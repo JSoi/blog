@@ -56,7 +56,7 @@ public class UserController {
         private String nickname;
         private String email;
         private String introduce;
-        private String profile_image_url;
+        private String profileImageUrl;
         private LocalDateTime createdAt;
 
 
@@ -64,7 +64,7 @@ public class UserController {
             this.name = user.getName();
             this.nickname = user.getNickname();
             this.email = user.getEmail();
-            this.profile_image_url = user.getProfile_image_url();
+            this.profileImageUrl = user.getProfileImageUrl();
             this.introduce = user.getIntroduce();
             this.createdAt = user.getCreatedAt();
 

@@ -43,7 +43,7 @@ public class LikesService {
             postRepository.updateLikeCount(targetPost.getId(), 1L);
         }
     }
-
+    // 쓰지 않지만 API에 명시됨
     @Transactional
     public Response.Simple undoLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(()

@@ -30,7 +30,7 @@ public class UserDto {
         @NotBlank(message = "비밀번호에 값을 입력하세요")
         private String password;
         private String introduce;
-        private String profile_image_url;
+        private String profileImageUrl;
     }
     @AllArgsConstructor
     @NoArgsConstructor
@@ -48,7 +48,7 @@ public class UserDto {
     @Builder    
     @Getter
     public static class Info{
-        Long user_id;
+        Long userId;
     }
 
 

@@ -29,6 +29,6 @@ public class ImageController {
     public Object addImage(@RequestParam("images") MultipartFile multipartFile, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         String result = bucketName + ".s3.ap-northeast-2.amazonaws.com/" + imageService.uploadImage(multipartFile);
-        return Response.Image.builder().image_url(result).build();
+        return Response.Image.builder().imageUrl(result).build();
     }
 }
