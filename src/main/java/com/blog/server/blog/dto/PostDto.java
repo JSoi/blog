@@ -1,26 +1,26 @@
 package com.blog.server.blog.dto;
 
-import com.blog.server.blog.domain.Likes;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Validated
 public class PostDto {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter @Setter
+    @Data
     @Builder
     public static class NewPost {
-        private Long user_id;
+        @NotNull
+        private MultipartFile image;
+        private Long userId;
         @NotBlank(message = "제목에 빈 칸을 입력하지 마세요")
         private String title;
         @NotBlank(message = "내용에 빈 칸을 입력하지 마세요")
         private String content;
-        private String image_url;
     }
 
     @NoArgsConstructor
@@ -32,6 +32,6 @@ public class PostDto {
         private String title;
         @NotBlank(message = "내용에 빈 칸을 입력하지 마세요")
         private String content;
-        private String image_url;
+        private String imageUrl;
     }
 }

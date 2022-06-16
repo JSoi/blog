@@ -2,11 +2,11 @@ package com.blog.server.blog.controller;
 
 import com.blog.server.blog.domain.Comment;
 import com.blog.server.blog.domain.Post;
+import com.blog.server.blog.domain.PostForm;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.dto.Response;
-import com.blog.server.blog.excpetion.BlogException;
-import com.blog.server.blog.excpetion.ErrorCode;
+import com.blog.server.blog.excpetion.*;
 import com.blog.server.blog.repository.LikesRepository;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
@@ -16,7 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,7 +51,6 @@ public class PostController {
         } else {
             findPostListByLoggedInUser(targetPostList, result, user);
         }
-
         return result;
     }
 
@@ -59,15 +62,17 @@ public class PostController {
         }
     }
 
-    @PostMapping("/api/posts")
-    public Response.Simple addPosts(@Valid @RequestBody PostDto.NewPost post, @AuthenticationPrincipal User user) {
+    @PostMapping(value = "/api/posts", consumes = {"multipart/form-data"})
+    public Response.Simple addPosts(@Valid @ModelAttribute PostForm postForm, BindingResult bindingResult,
+                                    @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        postService.addNewPost(post, user);
+        postService.addNewPost(postForm, user);
         return Response.Simple.builder().build();
     }
 
 
     // 게시글 조회
+
     @GetMapping("/api/posts/{postId}")
     public PostResponse getPost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
@@ -76,7 +81,6 @@ public class PostController {
         User targetUser = userRepository.findById(user.getId()).orElseThrow(() -> new BlogException(USER_NOT_EXIST));
         return new PostResponse(targetPost);
     }
-
 
     @DeleteMapping("/api/posts/{postId}")
     public Response.Simple deletePost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
@@ -92,6 +96,11 @@ public class PostController {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         postService.update(postId, requestDto, user.getId());
         return Response.Simple.builder().build();
+    }
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
     @Data
