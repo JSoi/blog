@@ -47,7 +47,7 @@ public class User extends TimeStamped implements UserDetails {
     private String introduce;
 
     @Column
-    private String profile_image_url;
+    private String profileImageUrl;
 
     @JsonIgnore
     @Column

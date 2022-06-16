@@ -28,7 +28,7 @@ public class LikesService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response.Simple doLike(LikesDto likesDto) {
+    public void doLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(()
                 -> new BlogException(USER_NOT_EXIST));
         Post targetPost = postRepository.findById(likesDto.getPost_id()).orElseThrow(()
@@ -42,9 +42,8 @@ public class LikesService {
             likesRepository.save(new Likes(targetPost, targetUser));
             postRepository.updateLikeCount(targetPost.getId(), 1L);
         }
-        return Response.Simple.builder().result(true).build();
     }
-
+    // 쓰지 않지만 API에 명시됨
     @Transactional
     public Response.Simple undoLike(LikesDto likesDto) {
         User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(()

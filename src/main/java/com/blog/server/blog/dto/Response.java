@@ -6,6 +6,7 @@ import lombok.*;
  * 문제가 있을 때는 대부분 Exception에서 처리된다.
  * 그래서 성공하는 케이스를 Default로 설정하였다!
  * */
+
 public class Response {
     @Getter @Setter
     @Builder
@@ -15,7 +16,7 @@ public class Response {
         @Builder.Default
         boolean result = true;
         @Builder.Default
-        int code = 202; // 성공 Default
+        int code = 200; // 성공 Default
     }
 
     @Getter @Setter
@@ -25,7 +26,7 @@ public class Response {
     public static class Message {
         String message;
         @Builder.Default
-        int code = 202;
+        int code = 200;
     }
 
     @Getter @Setter
@@ -35,7 +36,7 @@ public class Response {
     public static class Login {
         @Builder.Default
         boolean result = true;
-        String token;
+        String userToken;
         String nickname;
     }
 
@@ -47,7 +48,8 @@ public class Response {
     public static class Image {
         @Builder.Default
         boolean result = true;
-        String image_url;
+        @Builder.Default
+        String imageUrl = null;
     }
 
 }

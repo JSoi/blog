@@ -1,7 +1,7 @@
 package com.blog.server.blog.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.blog.server.blog.domain.Post;
+import com.blog.server.blog.domain.PostForm;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.excpetion.BlogException;
@@ -9,27 +9,25 @@ import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
+import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final ImageService imageService;
 
     @Transactional
-    public void addNewPost(PostDto.NewPost postDto, User user) {
-        postDto.setUser_id(user.getId());
-        User targetUser = userRepository.findById(postDto.getUser_id()).orElseThrow(() -> new BlogException(ErrorCode.USER_NOT_EXIST));
-        postRepository.save(Post.builder()
-                .user(targetUser)
-                .content(postDto.getContent())
-                .title(postDto.getTitle())
-                .image_url(postDto.getImage_url()).build());
+    public void addNewPost(PostForm postForm, User user) {
+        String imageUrl = postForm.getImage() == null ? null : imageService.uploadImage(postForm.getImage());
+        postRepository.save(new Post(postForm, imageUrl, user));
     }
 
     @Transactional
@@ -40,10 +38,12 @@ public class PostService {
         postRepository.save(targetPost);
     }
 
+
     @Transactional
     public void plusView(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new BlogException(POST_NOT_EXIST);
+        }
         postRepository.updateView(postId);
     }
-
-
 }

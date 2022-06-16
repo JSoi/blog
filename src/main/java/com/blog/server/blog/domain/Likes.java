@@ -19,12 +19,12 @@ public class Likes extends TimeStamped {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "postId")
     private Post post;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     public Likes(Post post, User user) {

@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "post")
+@Validated
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Post extends TimeStamped {
 
@@ -27,7 +30,7 @@ public class Post extends TimeStamped {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @JsonIgnore
@@ -41,38 +44,44 @@ public class Post extends TimeStamped {
     private List<Comment> commentList = new ArrayList<>();
 
     @Column(nullable = false, length = 25)
+    @NotBlank(message = "제목을 입력하세요")
+    @Size(max = 25 , message = "제목은 최대 25자입니다")
     private String title;
 
     @Column(nullable = false)
+    @NotBlank(message = "내용을 입력하세요")
     @Lob
-   private String content;
+    private String content;
 
-    @Column(nullable = false)
-    private String image_url;
+    private String imageUrl;
 
-    @Column(name = "view_count")
     private Long viewCount = 0L;
 
-    @Column(name = "like_count")
     private Long likeCount = 0L;
 
-    @Column(length = 10)
-    // Left, Right, Center
-    private String templates = "Center";
+    // Left(1), Right(2), Center(3)
+    private Long templates = 1L;
 
     @Builder
-    public Post(User user, String title, String content, String image_url) {
+    public Post(User user, String title, String content, String imageUrl) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.image_url = image_url;
+        this.imageUrl = imageUrl;
 
     }
 
     public void update(PostDto.UpdatePost updatePost) {
         this.title = updatePost.getTitle();
         this.content = updatePost.getContent();
-        this.image_url = updatePost.getImage_url();
+        this.imageUrl = updatePost.getImageUrl();
     }
-
+    @Builder
+    public Post(PostForm postForm, String imageUrl, User user){
+        this.title = postForm.getTitle();
+        this.content = postForm.getContent();
+        this.templates = postForm.getTemplate();
+        this.imageUrl = imageUrl;
+        this.user = user;
+    }
 }

@@ -8,6 +8,7 @@ import com.blog.server.blog.repository.CommentRepository;
 import com.blog.server.blog.service.CommentService;
 import com.blog.server.blog.validaton.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class CommentController {
     private final CommentRepository commentRepository;
     private final CommentService commentService;

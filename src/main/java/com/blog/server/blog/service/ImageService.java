@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.blog.server.blog.excpetion.BlogException;
+import com.blog.server.blog.excpetion.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ public class ImageService {
     private String bucket;
 
     private final AmazonS3 amazonS3;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
 
     public String uploadImage(MultipartFile multipartFile) {
         String fileName = createFileName(multipartFile.getOriginalFilename());
@@ -34,9 +38,9 @@ public class ImageService {
             amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+            throw new BlogException(ErrorCode.IMAGE_ERROR);
         }
-        return fileName;
+        return bucketName + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
     public void deleteImage(String fileName) {
@@ -51,7 +55,7 @@ public class ImageService {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
+            throw new BlogException(ErrorCode.WRONG_IMAGE_FILENAME);
         }
     }
 }

@@ -34,7 +34,7 @@ public class UserService {
                 .password(passwordEncoder.encode(userRegister.getPassword()))
                 .introduce(userRegister.getIntroduce())
                 .roles(Collections.singletonList("ROLE_USER"))
-                .profile_image_url(userRegister.getProfile_image_url())
+                .profileImageUrl(userRegister.getProfileImageUrl())
                 .build();
 
         userRepository.save(newUser);
@@ -44,11 +44,11 @@ public class UserService {
     @Transactional
     public Response.Login login(UserDto.Login loginDto) {
         User targetUser = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(()
-                -> new BlogException(ErrorCode.WRONG_ID));
+                -> new BlogException(ErrorCode.BAD_LOGIN));
         if (!passwordEncoder.matches(loginDto.getPassword(), targetUser.getPassword())) {
             throw new BlogException(ErrorCode.BAD_LOGIN);
         }
         String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getRoles());
-        return Response.Login.builder().result(true).token(token).nickname(targetUser.getNickname()).build();
+        return Response.Login.builder().result(true).userToken(token).nickname(targetUser.getNickname()).build();
     }
 }

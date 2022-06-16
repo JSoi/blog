@@ -11,6 +11,7 @@ import com.blog.server.blog.validaton.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
@@ -56,7 +58,7 @@ public class UserController {
         private String nickname;
         private String email;
         private String introduce;
-        private String profile_image_url;
+        private String profileImageUrl;
         private LocalDateTime createdAt;
 
 
@@ -64,7 +66,7 @@ public class UserController {
             this.name = user.getName();
             this.nickname = user.getNickname();
             this.email = user.getEmail();
-            this.profile_image_url = user.getProfile_image_url();
+            this.profileImageUrl = user.getProfileImageUrl();
             this.introduce = user.getIntroduce();
             this.createdAt = user.getCreatedAt();
 

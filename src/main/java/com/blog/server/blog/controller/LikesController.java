@@ -9,6 +9,7 @@ import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.service.LikesService;
 import com.blog.server.blog.validaton.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +18,16 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class LikesController {
     private final LikesService likeService;
 
-    @PostMapping("/{postId}/like")
+    @RequestMapping(value = "/{postId}/like", method = {RequestMethod.POST,RequestMethod.DELETE})
     public Response.Simple doLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN_TO_LIKE);
         LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
-        return likeService.doLike(targetLikes);
+        likeService.doLike(targetLikes);
+        return Response.Simple.builder().result(true).build();
     }
 
 //    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
