@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class LikesController {
     private final LikesService likeService;
 
-    @PostMapping("/{postId}/like")
+    @RequestMapping(value = "/{postId}/like", method = {RequestMethod.POST,RequestMethod.DELETE})
     public Response.Simple doLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN_TO_LIKE);
         LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
