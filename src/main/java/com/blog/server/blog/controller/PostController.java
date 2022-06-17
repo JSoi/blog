@@ -6,18 +6,17 @@ import com.blog.server.blog.domain.PostForm;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.dto.Response;
-import com.blog.server.blog.excpetion.*;
+import com.blog.server.blog.excpetion.BlogException;
+import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.LikesRepository;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.service.PostService;
 import com.blog.server.blog.validaton.Validator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -49,19 +48,17 @@ public class PostController {
     public List<PostResponse> getAllPost(@AuthenticationPrincipal User user) { // 고치기
         List<Post> targetPostList = postRepository.findAllByOrderByLikeCountDesc();
         List<PostResponse> result = new ArrayList<>();
-        if (user == null) {
-            targetPostList.forEach(p -> result.add(new PostResponse(p)));
-        } else {
-            findPostListByLoggedInUser(targetPostList, result, user);
-        }
+        processPost(user, targetPostList, result);
         return result;
     }
 
-    private void findPostListByLoggedInUser(List<Post> targetPostList, List<PostResponse> result, User user) {
+    private void processPost(User user, List<Post> targetPostList, List<PostResponse> result) {
         for (Post p : targetPostList) {
             PostResponse pr = new PostResponse(p);
+            if (user != null) {
+                pr.setLikeByMe(likesRepository.existsLikesByPostAndUser(p, user));
+            }
             pr.setNickname(p.getUser().getNickname());
-            pr.setLikeByMe(likesRepository.existsLikesByPostAndUser(p, user));
             result.add(pr);
         }
     }
@@ -101,6 +98,7 @@ public class PostController {
         postService.update(postId, requestDto, user.getId());
         return Response.Simple.builder().build();
     }
+
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);

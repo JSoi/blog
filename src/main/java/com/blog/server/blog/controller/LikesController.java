@@ -27,7 +27,7 @@ public class LikesController {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN_TO_LIKE);
         LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
         likeService.doLike(targetLikes);
-        return Response.Simple.builder().result(true).build();
+        return Response.Simple.builder().build();
     }
 
 //    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")

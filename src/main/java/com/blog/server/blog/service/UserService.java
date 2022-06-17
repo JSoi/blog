@@ -49,6 +49,6 @@ public class UserService {
             throw new BlogException(ErrorCode.BAD_LOGIN);
         }
         String token = jwtTokenProvider.createToken(targetUser.getEmail(), targetUser.getRoles());
-        return Response.Login.builder().result(true).userToken(token).nickname(targetUser.getNickname()).build();
+        return Response.Login.builder().userToken(token).nickname(targetUser.getNickname()).build();
     }
 }

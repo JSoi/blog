@@ -34,26 +34,27 @@ public class LikesService {
         Post targetPost = postRepository.findById(likesDto.getPost_id()).orElseThrow(()
                 -> new BlogException(POST_NOT_EXIST));
 
-        Optional<Likes> targetLikes = likesRepository.findByPostAndUser(targetPost, targetUser);
-        if (targetLikes.isPresent()) {
-            likesRepository.delete(targetLikes.get());
+        Likes targetLikes = likesRepository.findByPostAndUser(targetPost, targetUser).orElse(null);
+        if (targetLikes != null) {
+            likesRepository.delete(targetLikes);
             postRepository.updateLikeCount(targetPost.getId(), -1L);
         } else {
             likesRepository.save(new Likes(targetPost, targetUser));
             postRepository.updateLikeCount(targetPost.getId(), 1L);
         }
     }
+
     // 쓰지 않지만 API에 명시됨
-    @Transactional
-    public Response.Simple undoLike(LikesDto likesDto) {
-        User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(()
-                -> new BlogException(USER_NOT_EXIST));
-
-        Likes targetLikes = likesRepository.findByUser(targetUser).orElseThrow(()
-                -> new BlogException(LIKES_NOT_EXIST));
-
-        likesRepository.delete(targetLikes);
-
-        return Response.Simple.builder().result(true).build();
-    }
+//    @Transactional
+//    public Response.Simple undoLike(LikesDto likesDto) {
+//        User targetUser = userRepository.findById(likesDto.getUser_id()).orElseThrow(()
+//                -> new BlogException(USER_NOT_EXIST));
+//
+//        Likes targetLikes = likesRepository.findByUser(targetUser).orElseThrow(()
+//                -> new BlogException(LIKES_NOT_EXIST));
+//
+//        likesRepository.delete(targetLikes);
+//
+//        return Response.Simple.builder().result(true).build();
+//    }
 }
