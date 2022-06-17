@@ -4,40 +4,16 @@ import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Validated
 public class CommentDto {
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    @Builder
-    public static class NewComment {
-        Long user_id;
-        @NotBlank(message = "댓글에 내용을 입력하세요")
-        String content;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    @Builder
-    public static class DeleteComment {
-        Long user_id;
-        Long post_id;
-        Long comment_id;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    @Builder
-    public static class UpdateComment {
-        Long post_id;
-        Long comment_id;
-        @NotBlank(message = "댓글에 내용을 입력하세요")
-        String content;
-    }
+    @NotBlank(message = "댓글에 내용을 입력하세요")
+    @Size(max = 1000, message = "내용을 1000자 이하로 입력하세요")
+    String content;
 }

@@ -24,9 +24,9 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("{postId}")
-    public Response.Simple addComments(@PathVariable Long postId, @Valid @RequestBody CommentDto.NewComment commentDto, @AuthenticationPrincipal User user) {
+    public Response.Simple addComments(@PathVariable Long postId, @Valid @RequestBody CommentDto commentDto, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        commentService.addComment(postId, commentDto);
+        commentService.addComment(commentDto, postId, user);
         return Response.Simple.builder().build();
     }
 
@@ -38,7 +38,7 @@ public class CommentController {
     }
 
     @PutMapping("{commentId}")
-    public Response.Simple fixComments(@PathVariable Long commentId, @Valid @RequestBody CommentDto.UpdateComment commentDto,
+    public Response.Simple fixComments(@PathVariable Long commentId, @Valid @RequestBody CommentDto commentDto,
                                        @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         commentService.updateComment(commentId, commentDto);

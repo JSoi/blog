@@ -1,6 +1,6 @@
 package com.blog.server.blog.domain;
 
-import com.blog.server.blog.dto.PostDto;
+import com.blog.server.blog.dto.PostFormDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -54,7 +54,7 @@ public class Post extends TimeStamped {
     @Lob
     private String content;
 
-    @Column(length = 300)
+    @Column(length = 512)
     private String imageUrl;
 
     private Long viewCount = 0L;
@@ -73,7 +73,7 @@ public class Post extends TimeStamped {
 
     }
 
-    public void update(PostForm updatePost, String imageUrl) {
+    public void update(PostFormDto updatePost, String imageUrl) {
         this.title = updatePost.getTitle();
         this.content = updatePost.getContent();
         this.templates = updatePost.getTemplate();
@@ -81,10 +81,10 @@ public class Post extends TimeStamped {
     }
 
     @Builder
-    public Post(PostForm postForm, String imageUrl, User user) {
-        this.title = postForm.getTitle();
-        this.content = postForm.getContent();
-        this.templates = postForm.getTemplate();
+    public Post(PostFormDto postFormDto, String imageUrl, User user) {
+        this.title = postFormDto.getTitle();
+        this.content = postFormDto.getContent();
+        this.templates = postFormDto.getTemplate();
         this.imageUrl = imageUrl;
         this.user = user;
     }
