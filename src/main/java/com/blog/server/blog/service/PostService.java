@@ -27,14 +27,18 @@ public class PostService {
     @Transactional
     public void addNewPost(PostForm postForm, User user) {
         String imageUrl = postForm.getImage() == null ? null : imageService.uploadImage(postForm.getImage());
+        log.error(imageUrl);
         postRepository.save(new Post(postForm, imageUrl, user));
     }
 
     @Transactional
-    public void update(Long postId, PostDto.UpdatePost updatePost, Long userId) {
+    public void update(Long postId, PostForm updatePost, Long userId) {
         // userId는 쓰지 않지만 추후에 확장 가능할 것 같다!
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new BlogException(ErrorCode.POST_NOT_EXIST));
-        targetPost.update(updatePost);
+        if (targetPost.getImageUrl() != null) imageService.deleteImage(targetPost.getImageUrl());
+        String updateImageUrl = updatePost.getImage() == null ? null : imageService.uploadImage(updatePost.getImage());
+        targetPost.update(updatePost, updateImageUrl);
+
         postRepository.save(targetPost);
     }
 

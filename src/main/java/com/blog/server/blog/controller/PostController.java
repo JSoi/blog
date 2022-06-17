@@ -91,8 +91,8 @@ public class PostController {
         return Response.Simple.builder().build();
     }
 
-    @PutMapping("/api/posts/{postId}")
-    public Response.Simple fixPost(@PathVariable Long postId, @Valid @RequestBody PostDto.UpdatePost requestDto,
+    @PutMapping(value = "/api/posts/{postId}", consumes = {"multipart/form-data"})
+    public Response.Simple fixPost(@PathVariable Long postId, @Valid @ModelAttribute PostForm requestDto,
                                    @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
         postService.update(postId, requestDto, user.getId());

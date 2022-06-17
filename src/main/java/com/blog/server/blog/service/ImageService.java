@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
@@ -28,7 +33,7 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadImage(MultipartFile multipartFile) {
+    public String uploadImageFile(MultipartFile multipartFile) {
         String fileName = createFileName(multipartFile.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -40,11 +45,16 @@ public class ImageService {
         } catch (IOException e) {
             throw new BlogException(ErrorCode.IMAGE_ERROR);
         }
-        return bucketName + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
+        return fileName;
+    }
+
+    public String uploadImage(MultipartFile multipartFile) {
+        return bucketName + ".s3.ap-northeast-2.amazonaws.com/" + uploadImageFile(multipartFile);
     }
 
     public void deleteImage(String fileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        String specFileName = fileName.replaceFirst(bucketName + ".s3.ap-northeast-2.amazonaws.com/", "");
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, specFileName));
     }
 
     private String createFileName(String fileName) {
@@ -52,10 +62,19 @@ public class ImageService {
     }
 
     private String getFileExtension(String fileName) {
+        List<String> imgLst = Arrays.asList(".jpg", ".png", ".jpeg", ".bmp");
+        fileName = fileName.toLowerCase();
+        String target = "";
         try {
-            return fileName.substring(fileName.lastIndexOf("."));
+            target = fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
             throw new BlogException(ErrorCode.WRONG_IMAGE_FILENAME);
         }
+        if (imgLst.contains(target)) {
+            return target;
+        } else {
+            throw new BlogException(ErrorCode.WRONG_FILE_TYPE);
+        }
+
     }
 }

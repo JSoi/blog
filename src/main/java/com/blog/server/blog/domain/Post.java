@@ -45,14 +45,16 @@ public class Post extends TimeStamped {
 
     @Column(nullable = false, length = 25)
     @NotBlank(message = "제목을 입력하세요")
-    @Size(max = 25 , message = "제목은 최대 25자입니다")
+    @Size(max = 25, message = "제목은 최대 25자입니다")
     private String title;
 
     @Column(nullable = false)
     @NotBlank(message = "내용을 입력하세요")
+    @Size(max = 3000, message = "내용은 3000자 이하로 작성해주세요")
     @Lob
     private String content;
 
+    @Column(length = 300)
     private String imageUrl;
 
     private Long viewCount = 0L;
@@ -71,13 +73,15 @@ public class Post extends TimeStamped {
 
     }
 
-    public void update(PostDto.UpdatePost updatePost) {
+    public void update(PostForm updatePost, String imageUrl) {
         this.title = updatePost.getTitle();
         this.content = updatePost.getContent();
-        this.imageUrl = updatePost.getImageUrl();
+        this.templates = updatePost.getTemplate();
+        this.imageUrl = imageUrl;
     }
+
     @Builder
-    public Post(PostForm postForm, String imageUrl, User user){
+    public Post(PostForm postForm, String imageUrl, User user) {
         this.title = postForm.getTitle();
         this.content = postForm.getContent();
         this.templates = postForm.getTemplate();

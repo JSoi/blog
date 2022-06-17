@@ -23,7 +23,8 @@ public enum ErrorCode {
     WRONG_IMAGE_FILENAME(BAD_REQUEST, "잘못된 이미지 이름입니다."),
     ALREADY_LOGGED_IN(LOCKED, "이미 로그인 되어있습니다"),
     EMPTY_INPUT(BAD_REQUEST, "빈 값을 입력하지 마세요"),
-    EXIST_EMAIL(BAD_REQUEST, "중복된 아이디입니다");
+    EXIST_EMAIL(BAD_REQUEST, "중복된 아이디입니다"),
+    WRONG_FILE_TYPE(BAD_REQUEST, "JPEG, JPG, PNG, BMP 이미지 형식만 첨부해주세요");
     private final HttpStatus httpStatus;
     private final String detail;
 }
