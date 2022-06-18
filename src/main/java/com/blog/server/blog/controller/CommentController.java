@@ -26,7 +26,7 @@ public class CommentController {
     @PostMapping("{postId}")
     public Response.Simple addComments(@PathVariable Long postId, @Valid @RequestBody CommentDto.NewComment commentDto, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        commentService.addComment(postId, commentDto);
+        commentService.addComment(postId, user, commentDto);
         return Response.Simple.builder().build();
     }
 

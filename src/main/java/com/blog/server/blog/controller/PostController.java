@@ -4,7 +4,6 @@ import com.blog.server.blog.domain.Comment;
 import com.blog.server.blog.domain.Post;
 import com.blog.server.blog.domain.PostForm;
 import com.blog.server.blog.domain.User;
-import com.blog.server.blog.dto.PostDto;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
@@ -95,7 +94,7 @@ public class PostController {
     public Response.Simple fixPost(@PathVariable Long postId, @Valid @ModelAttribute PostForm requestDto,
                                    @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        postService.update(postId, requestDto, user.getId());
+        postService.update(postId, requestDto, user);
         return Response.Simple.builder().build();
     }
 
@@ -110,7 +109,7 @@ public class PostController {
     static class PostResponse {
 
         private Long id, likeCount, viewCount, template; // query 해야될듯 ^^;
-        private String nickname, imageUrl, content, title;
+        private String nickname, imageUrl, content, title, email;
         private LocalDateTime createdAt, modifiedAt;
 
         private List<CommentResponse> comment;
@@ -121,6 +120,7 @@ public class PostController {
         public PostResponse(Post post) {
             this.title = post.getTitle();
             this.id = post.getId();
+            this.email = post.getUser().getEmail();
             this.content = post.getContent();
             this.imageUrl = post.getImageUrl();
             this.createdAt = post.getCreatedAt();
@@ -136,15 +136,16 @@ public class PostController {
     @AllArgsConstructor
     public static class CommentResponse {
         private Long id;
-        private String content;
+        private String content, email, nickname;
         private LocalDateTime createdAt, modifiedAt;
 
         public CommentResponse(Comment comment) {
             this.id = comment.getId();
+            this.email = comment.getUser().getEmail();
+            this.nickname = comment.getUser().getNickname();
             this.content = comment.getContent();
             this.createdAt = comment.getCreatedAt();
             this.modifiedAt = comment.getModifiedAt();
-
         }
     }
 }
