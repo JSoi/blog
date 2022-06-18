@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Size;
 @Getter
 @NoArgsConstructor
 @Table(name = "comment")
+@Validated
 public class Comment extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
