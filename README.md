@@ -6,17 +6,19 @@
 
 ### 목차
 
-[요구 사항 ](## 요구사항)
+[요구 사항](# 요구사항)
 
-[ERD](## ERD)
+[ERD](# ERD)
 
-[REST API](## REST API)
+[REST API](# REST API)
 
-[필수과제](## 필수과제)
+[필수과제](# 필수과제)
 
-[My Issue](## My Issue)
+[인증/인가](#인증, 인가)
 
-[인증/인가 ](##인증, 인가)
+[My Issue](# My Issue)
+
+[앞으로 공부할 것](#앞으로-공부할-것)
 
 
 
@@ -57,57 +59,7 @@
 ## REST API
 
 - [노션 링크](https://teamsparta.notion.site/4-c4ddea873ddd41ad94bd215f2743598c)
-
-| 분류   | 기능          | Method | Endpoint                  | request | response_true | resposne_false |
-| ------ | ------------- | ------ | ------------------------- | ------- | ------------- | -------------- |
-| 게시글 | 목록 가져오기 | GET    | /api/posts                | - | {<br/> result:[boolean]<br/> code:[Long]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} |
-|        | 게시글 추가   | POST   | /api/posts                | {<br />user[User],<br />post {<br />user_id:[Long],<br />title:[String],<br />content:[Text],<br />image_url:[String],<br />template:[’Left’,'Right','Center']<br />}<br />} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} |
-|        | 이미지 추가   | POST   | /api/image                | {<br />image:[MultipartFile]<br />} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} |
-|        | 게시글 조회   | GET    | /api/posts/{postId}       | -                                                            | **첨부 #1**<br />바로 아래를 참고 | {<br/> result:[boolean]<br/> code:[Long]<br/>} |
-|        | 게시글 삭제   | DELETE | /api/comments/{commentId} | - | {<br/> result:[boolean]<br/> code:[Long]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} |
-|        | 게시글 수정   | PUT    | /api/comments/{commentId} | {<br/>post_id:[Long],<br/>content:[String]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-| 댓글   | 댓글 추가     | POST   | /api/comments/{postId}    | {<br/>post_id:[Long],<br/>content_id:[Long]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-|        | 댓글 삭제     | DELETE | /api/comments/{commentId} | - | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-|        | 댓글 수정     | PUT    | /api/comments/{commentId} | {<br/> user_id:[token],<br/> post_id:[Long],<br/> comment_id[Long],<br/> content:[String]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-| 좋아요 | 게시글 좋아요 | POST   | /api/posts/{postId}/like  | {<br/> user_id:[token],<br/> post_id:[Long]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-| 회원   | 회원가입      | POST   | /api/register             | {<br/>name:[String]<br/>nickname:[String]<br/>email:[String]<br/>password:{String]<br/>introduce:[String]<br/>profile_image_url:[String]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-|        | 로그인        | POST   | /api/login                | {<br/>email:[String]<br/>password:[String]<br/>} | {<br/> result:[boolean]<br/> code:[Long]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-|        | 회원정보 조회 | GET    | /api/user                 | - | {<br/> name:[String],<br/> nickname:[String],<br/> email:[String],<br/> introduce:[String],<br/> profile_image_url:[String],<br/> createdAt:[Datetime]<br/>} | { <br />result:[boolean],<br />code: [Long] <br />} |
-
-
-
-#### 첨부 #1 : 게시글 조회의 Response_true
-
-
-
-```json
-{
-result : [boolean],
-post : 
-    {
-     nickname:[String]
-     post_id : [Long],
-     title [String],
-     content : [String],
-     image_url : [String],
-     like_by_me : [boolean],
-     like_count : [Long],
-     view_count : [Long],
-     created_at : [Datetime],
-     modified_at : [Datetime],
-	 template:[’Left’|’Right’|’Center’]
-} [List]
-comment :
-	{
-     comment_id:[Long],
-     content:[String],
-     createdAt:[Datetime],
-     modifiedAt:[Datetime],
-     }
-}
-```
-
-
+![aa](https://user-images.githubusercontent.com/17975647/174419197-ce66f015-e4e5-4fdf-8853-c0d2336b54bd.png)
 
 ## 필수과제
 
@@ -204,10 +156,10 @@ comment :
 Spring Boot에서 CORS 설정하기
 
 1. Configuration 적용하기
-<<<<<<< HEAD
+
 2. Annotation Controller에 붙이기 ```@CrossOrigin(origins = "*", allowedHeaders = "*")```
 
-에서 좀 더 간단한 2번을 선택하여 구현하였다. 아직 검증해 보지 않아서 작동하지 않으면 1번의 방법으로 수정할 예정이다.
+에서 좀 더 간단한 2번을 선택하여 구현하였다. 아직 검증해 보지 않아서 작동하지 않으면 1번의 방법으로 수정할 예정이다. -> 아직까지는 잘 작동한다!!
 
 
 
@@ -284,36 +236,77 @@ public static class CommentResponse {
 
 **[결과]**
 
-조금 더 깔끔해진 것을 볼  수 있다.
+![image](https://user-images.githubusercontent.com/17975647/174424349-ddbb3233-3d8d-401d-9906-3b3ad4279873.png)
 
-![image](https://user-images.githubusercontent.com/17975647/173811467-57a8ea9f-4e0f-422b-a03b-2dc1ad399769.png)
+더 깔끔해졌다!
 
-원하는 데이터 형식으로 뽑아내기에 적합한 것 같다.
+원하는 데이터 형식으로 뽑아내기에 적합한 방법이라는 생각이 든다.
 
-만약 프론트에서 원하는 Response 형태가 있다면 그에 맞춰서 보내 줄 수 있다.
-
-
-
-### 예외 처리
+만약 프론트에서 원하는 Response 형태가 있다면 그에 맞춰서 보내 줄 수 있어서 좋았다
 
 
-예외 처리는 전과 같이 RestControllerAdvice를 사용했다. 
 
-RestControllerAdvice를 사용한 전반적인 예외 처리
+### DTO에서의 Setter 사용 지양
+
+DTO든 어디든 Setter는 되도록 사용하지 않는게 좋다고 한다
+
+이를 대신해 Builder 패턴을 권장하고 있다.
+
+
+
+### 예외 처리 및 유효성 검사
+
+우선 예외 처리와 유효성 검사에 대해 개념을 짧게 정리해 보자면
+
+- **유효성 검사** : JSON👉DTO 로 Data를 객체에 옮겨 담으면서 길이나 형식을 체크하는 것
+
+- **예외 처리** : 사용자의 실수, 서버의 오류 등으로 인한 요청이 실패한 경우에 에러를 처리
+
+예외 처리와 유효성 검사는 함께 따라가는 개념인 것 같은데, 
+
+
+
+#### 유효성 검사
+
+Hibernate bean validator를 사용해서 유효성 검사를 진행했다.
+
+검사는 **DTO**에서 이루어지며, **엔티티**에도 적용할 수 있다.
+
+처음에는 User의 Input값이 들어 있는 DTO에서만 유효성 검사를 진행하려 했으나,
+
+아래 링크를 보고 둘 다 진행하게 되었다😅
+
+<https://stackoverflow.com/questions/42280355/spring-rest-api-validation-should-be-in-dto-or-in-entity>
+
+**[DTO에서의 유효성 검사]**
 
 ```java
-@RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(value = BlogException.class)
-    protected ResponseEntity<ErrorResponse> handleCustomException(BlogException e) {
-        log.error("handleCustomException throw CustomException : {}", e.getErrorCode());
-        return ErrorResponse.toResponseEntity(e.getErrorCode());
-    }
+@Validated
+public class CommentDto {
+    @NotBlank(message = "댓글에 내용을 입력하세요")
+    @Size(max = 1000, message = "내용을 1000자 이하로 입력하세요")
+    String content;
+}
 ```
 
+**[Entity에서의 유효성 검사]**
+
+```java
+@Table(name = "comment")
+@Validated
+public class Comment extends TimeStamped {
+    @Size(min = 1, max = 1000, message = "댓글 내용은 1자 이상, 1000자 이하여야 합니다")
+    @Column(length = 1000)
+    private String content;
+    ..
+}
+```
+
+아직 의문인 건 Valid를 이렇게 남용해도 되는 것인지, 좀 더 좋은 방법이 없을까 하는 것이다.
 
 
-직접 구현한 Validator
+
+**[로그인, 페이지 접근 관련 유효성 검사]**
 
 ```java
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -333,11 +326,72 @@ public static void alreadyLoggedIn(User user, ErrorCode code) {
 
 
 
-더 많은 예외가 있을 것 같은데 시간이 촉박해서 커버하지 못했다! 시간이 되면 다음 과제를 진행하면서 더 구현해보고 싶다
+
+
+### 예외
+
+저번 과제와 마찬가지로 RestControllerAdvice를 사용해 전반적인 에러를 관리했다.
+
+이번 프로젝트에서 발생하는 Exception은 아래와 같다.
+
+1. **DTO 검증시 발생하는** 
+   1. MethodArgumentNotValidException : Entity, DTO의 검증시 발생
+   2. ConstraintViolationException : FormData의 DTO 검증시 발생
+   3. MaxUploadSizeExceededException : 이미지 업로드시 제한 용량 오버시 발생
+
+2. **직접 커스텀한**
+   1. BlogException  : 프로젝트 전역에서 중복 아이디, 잘못 된 로그인, 없는 포스트 번호 등 규칙을 할 때 발생
 
 
 
-### JPQL
+**1-1~3(MethodArgumentNotValid, ContstraintViolation, MaxUploadSizeExceeded) 의 경우**
+
+```java
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<ErrorResponse> validException(
+        MethodArgumentNotValidException ex) {
+    String responseStr = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+    return argumentErrors(responseStr); // 2
+}
+
+@ExceptionHandler(ConstraintViolationException.class)
+public ResponseEntity<ErrorResponse> validExceptionNotControlled(ConstraintViolationException cve) {
+    return argumentErrors(cve.getConstraintViolations().iterator().next().getMessage());
+}
+
+@ExceptionHandler(MaxUploadSizeExceededException.class)
+public ResponseEntity<ErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+    return argumentErrors(ErrorCode.IMAGE_SIZE_EXCEEDED.getDetail());
+}
+```
+
+
+
+**2-1 (BlogException)**
+
+```java
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(value = BlogException.class)
+    protected ResponseEntity<ErrorResponse> handleCustomException(BlogException e) {
+        log.error("handleCustomException throw CustomException : {}", e.getErrorCode());
+        return ErrorResponse.toResponseEntity(e.getErrorCode());
+    }
+}
+```
+
+
+
+더 많은 예외가 있을 것 같은데 시간이 촉박해서 커버하지 못했다!
+
+시간이 되면 다음 과제를 진행하면서 더 구현해보고 싶다😃
+
+
+
+### JPQL..
+
+콘솔창에 올라가는 SQL문들을 보고 있노라면 쿼리가 많아 신경이 쓰인다
 
 ```java
 @Modifying
@@ -349,17 +403,56 @@ void updateView(Long id);
 void updateLikeCount(Long id, Long value);
 ```
 
-쿼리의 양이 더 늘어나는 것을 피하고자 JPQL로 Repository에 간단하게 구현해 보았다.
+그래서 쿼리의 양이 더 늘어나는 것을 피하고 싶어 JPQL로 Repository에 간단하게 구현해 보았다.
 
-앞으로 쓸 일이 많아서 더 익혀둬야 할 것 같다.
-
-
+이후에 Fetchjoin같은 경우에도 쿼리를 작성해서 사용하는 것 같은데, 더 공부해 놓아야 될 것 같다.
 
 
 
-## 더 해야할 것
+### 어려운 Security
 
-연관관계가 늘어나면서 쿼리문이 늘어나고 심지어는N+1 문제가 일어나기도 한다.
+시큐리티 관련 지식이 전무해서 코드에서도 그 점이 많이 드러났던 것 같다
+
+```java
+@GetMapping("/user")
+public UserInfo userInfo(@AuthenticationPrincipal User user) {
+    Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
+    User findUser = userRepository.findById(user.getId()).orElseThrow(()
+            -> new BlogException(ErrorCode.USER_NOT_EXIST));
+    return new UserInfo(findUser);
+}
+```
+
+지금은 수정된 상태지만, 이렇게 User를 중복 검사하는 실수도 잦았다.
+
+이런 실수를 줄이려면 시큐리티 관련 기초를 더 쌓아야 될 것 같다
+
+
+
+
+### 서버시간 동기화 문제
+
+application.properties 에 다음 내용 추가
+
+```
+spring.datasource.url={내DB}?serverTimezone=Asia/Seoul
+```
+
+```java
+@PostConstruct
+public void started() {
+   // timezone UTC 셋팅
+   TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+}
+```
+
+이것때문에 서버를 지우고 새로 만들면서 한참을... 헤맸기 때문에 써 넣어본다😅
+
+
+
+## 앞으로 공부할 것
+
+연관관계가 늘어나면서 쿼리문이 늘어나고 심지어는 N+1 문제가 일어나기도 한다.
 
 
 
@@ -381,5 +474,5 @@ Fetch Join을 할 때 User같이 ToMany가 여러 개 인 경우에는 어떻게
 
 해당 조건을 기반으로 이번 기회에 적용해 보려고 했는데, 댓글까지 추가적으로 구현하는 바람에 연관 관계가 조금 더 복잡해져 시간이 더 걸릴 것 같다.
 
-그래서 DTO로 쿼리를 날리는 방법을 해 보고 있었는데 진행이 어렵다. 이런 경우 QueryDSL을 쓰기도 한다는데..허허 😅 더 공부해야겠다.
+그래서 DTO로 쿼리를 날리는 방법을 해 보고 있었는데 진행이 어렵다. 이런 경우 QueryDSL을 쓰기도 한다는데..허허 😅 더 공부해야겠다. 갈길이 멀다!
 
