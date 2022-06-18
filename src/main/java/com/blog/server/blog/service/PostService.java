@@ -28,7 +28,7 @@ public class PostService {
     }
 
     @Transactional
-    public void update(Long postId, PostFormDto updatePostDto, Long userId) {
+    public void update(Long postId, PostFormDto updatePostDto, User user) {
         // userId는 쓰지 않지만 추후에 확장 가능할 것 같다!
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new BlogException(ErrorCode.POST_NOT_EXIST));
         if (targetPost.getImageUrl() != null) imageService.deleteImage(targetPost.getImageUrl());

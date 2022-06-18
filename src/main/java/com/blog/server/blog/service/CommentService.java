@@ -8,7 +8,6 @@ import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.CommentRepository;
 import com.blog.server.blog.repository.PostRepository;
-import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ import javax.transaction.Transactional;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public void addComment(CommentDto newCommentDto,  Long postId, User user) {
