@@ -2,18 +2,17 @@ package com.blog.server.blog.controller;
 
 import com.blog.server.blog.domain.Comment;
 import com.blog.server.blog.domain.Post;
-import com.blog.server.blog.domain.PostForm;
 import com.blog.server.blog.domain.User;
-import com.blog.server.blog.dto.PostDto;
+import com.blog.server.blog.dto.PostFormDto;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.LikesRepository;
 import com.blog.server.blog.repository.PostRepository;
-import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.service.PostService;
 import com.blog.server.blog.validaton.Validator;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
-import static com.blog.server.blog.excpetion.ErrorCode.USER_NOT_EXIST;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +38,6 @@ import static com.blog.server.blog.excpetion.ErrorCode.USER_NOT_EXIST;
 @ResponseStatus(HttpStatus.ACCEPTED)
 public class PostController {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final LikesRepository likesRepository;
     private final PostService postService;
 
@@ -48,40 +45,37 @@ public class PostController {
     public List<PostResponse> getAllPost(@AuthenticationPrincipal User user) { // 고치기
         List<Post> targetPostList = postRepository.findAllByOrderByLikeCountDesc();
         List<PostResponse> result = new ArrayList<>();
-        processPost(user, targetPostList, result);
+        for (Post p : targetPostList) {
+            result.add(processEachPost(user, p));
+        }
         return result;
     }
-
-    private void processPost(User user, List<Post> targetPostList, List<PostResponse> result) {
-        for (Post p : targetPostList) {
-            PostResponse pr = new PostResponse(p);
-            if (user != null) {
-                pr.setLikeByMe(likesRepository.existsLikesByPostAndUser(p, user));
-            }
-            pr.setNickname(p.getUser().getNickname());
-            result.add(pr);
-        }
-    }
-
-    @PostMapping(value = "/api/posts", consumes = {"multipart/form-data"})
-    public Response.Simple addPosts(@Valid @ModelAttribute PostForm postForm, BindingResult bindingResult,
-                                    @AuthenticationPrincipal User user) {
-        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        postService.addNewPost(postForm, user);
-        return Response.Simple.builder().build();
-    }
-
-
     // 게시글 조회
 
     @GetMapping("/api/posts/{postId}")
     public PostResponse getPost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
+
         postService.plusView(postId); // 조회 시 View가 하나 올라가는 함수
-        Post targetPost = postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
-        User targetUser = userRepository.findById(user.getId()).orElseThrow(() -> new BlogException(USER_NOT_EXIST));
-        return new PostResponse(targetPost);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BlogException(POST_NOT_EXIST));
+        return processEachPost(user, post);
     }
+
+    private PostResponse processEachPost(User user, Post p) {
+        boolean likeByMe = user != null && likesRepository.existsLikesByPostAndUser(p, user);
+        String nickName = p.getUser().getNickname();
+        return new PostResponse(p, likeByMe, nickName);
+    }
+
+
+    @PostMapping(value = "/api/posts", consumes = {"multipart/form-data"})
+    public Response.Simple addPosts(@Valid @ModelAttribute PostFormDto postFormDto, BindingResult bindingResult,
+                                    @AuthenticationPrincipal User user) {
+        Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
+        postService.addNewPost(postFormDto, user);
+        return Response.Simple.builder().build();
+    }
+
 
     @DeleteMapping("/api/posts/{postId}")
     public Response.Simple deletePost(@PathVariable Long postId, @AuthenticationPrincipal User user) {
@@ -92,10 +86,10 @@ public class PostController {
     }
 
     @PutMapping(value = "/api/posts/{postId}", consumes = {"multipart/form-data"})
-    public Response.Simple fixPost(@PathVariable Long postId, @Valid @ModelAttribute PostForm requestDto,
+    public Response.Simple fixPost(@PathVariable Long postId, @Valid @ModelAttribute PostFormDto requestDto,
                                    @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        postService.update(postId, requestDto, user.getId());
+        postService.update(postId, requestDto, user);
         return Response.Simple.builder().build();
     }
 
@@ -115,10 +109,11 @@ public class PostController {
 
         private List<CommentResponse> comment;
         ////추가하기
-        private boolean likeByMe = false;
+        private boolean likeByMe;
 
 
-        public PostResponse(Post post) {
+        @Builder
+        public PostResponse(Post post, boolean like, String nickname) {
             this.title = post.getTitle();
             this.id = post.getId();
             this.content = post.getContent();
@@ -129,6 +124,8 @@ public class PostController {
             this.viewCount = post.getViewCount();
             this.comment = post.getCommentList().stream().map(CommentResponse::new).collect(Collectors.toList());
             this.likeCount = (long) post.getLikesList().size();
+            this.likeByMe = like;
+            this.nickname = nickname;
         }
     }
 

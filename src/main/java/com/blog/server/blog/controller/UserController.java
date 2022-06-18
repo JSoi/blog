@@ -3,7 +3,6 @@ package com.blog.server.blog.controller;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.dto.UserDto;
-import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.service.UserService;
@@ -45,9 +44,7 @@ public class UserController {
     @GetMapping("/user")
     public UserInfo userInfo(@AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN);
-        User findUser = userRepository.findById(user.getId()).orElseThrow(()
-                -> new BlogException(ErrorCode.USER_NOT_EXIST));
-        return new UserInfo(findUser);
+        return new UserInfo(user);
     }
 
     //ResponseUser 필요

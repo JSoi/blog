@@ -8,7 +8,6 @@ import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.CommentRepository;
 import com.blog.server.blog.repository.PostRepository;
-import com.blog.server.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,26 +18,20 @@ import javax.transaction.Transactional;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
 
     @Transactional
-    public void addComment(Long id, CommentDto.NewComment newCommentDto) {
-        Post targetPost = postRepository.findById(id).orElseThrow(()
+    public void addComment(CommentDto newCommentDto,  Long postId, User user) {
+        Post targetPost = postRepository.findById(postId).orElseThrow(()
                 -> new BlogException(ErrorCode.POST_NOT_EXIST));
 
-        User user = userRepository.findById(id).orElseThrow(()
-                -> new BlogException(ErrorCode.USER_NOT_EXIST));
-
-        commentRepository.save(new Comment(targetPost, user, newCommentDto.getContent()));
+        commentRepository.save(new Comment(targetPost, user, newCommentDto));
     }
 
     @Transactional
-    public void updateComment(Long commentId, CommentDto.UpdateComment commentDto) {
+    public void updateComment(Long commentId, CommentDto commentDto) {
         Comment targetComment = commentRepository.findById(commentId).orElseThrow(()
                 -> new BlogException(ErrorCode.COMMENT_NOT_EXIST));
-
         targetComment.update(commentDto);
-
         commentRepository.save(targetComment);
     }
 }

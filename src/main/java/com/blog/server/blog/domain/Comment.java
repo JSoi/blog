@@ -6,15 +6,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "comment")
+@Validated
 public class Comment extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,17 +33,18 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "userId")
     private User user;
 
-    @Column
+    @Size(min = 1, max = 1000, message = "댓글 내용은 1자 이상, 1000자 이하여야 합니다")
+    @Column(length = 1000)
     private String content;
 
-    @Builder
-    public Comment(Post post, User user, String content) {
-        this.content = content;
+
+    public Comment(Post post, User user, CommentDto commentDto) {
+        this.content = commentDto.getContent();
         this.post = post;
         this.user = user;
     }
 
-    public void update(CommentDto.UpdateComment commentDto) {
+    public void update(CommentDto commentDto) {
         this.content = commentDto.getContent();
     }
 }
