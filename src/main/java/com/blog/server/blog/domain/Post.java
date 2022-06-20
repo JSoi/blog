@@ -1,9 +1,11 @@
 package com.blog.server.blog.domain;
 
+import com.blog.server.blog.controller.PostController;
 import com.blog.server.blog.dto.PostDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,8 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "post")
 @Validated
+@Builder
+@AllArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Post extends TimeStamped {
 
@@ -73,7 +77,7 @@ public class Post extends TimeStamped {
 
     }
 
-    public void update(PostForm updatePost, String imageUrl) {
+    public void update(PostController.PostForm updatePost, String imageUrl) {
         this.title = updatePost.getTitle();
         this.content = updatePost.getContent();
         this.templates = updatePost.getTemplate();
@@ -81,7 +85,7 @@ public class Post extends TimeStamped {
     }
 
     @Builder
-    public Post(PostForm postForm, String imageUrl, User user) {
+    public Post(PostController.PostForm postForm, String imageUrl, User user) {
         this.title = postForm.getTitle();
         this.content = postForm.getContent();
         this.templates = postForm.getTemplate();
