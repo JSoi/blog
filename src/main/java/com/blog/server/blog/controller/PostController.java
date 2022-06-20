@@ -45,13 +45,19 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/api/posts")
-    public List<PostResponse> getAllPost(@AuthenticationPrincipal User user, @RequestParam Integer page, @RequestParam Integer size) { // 고치기
-        PageRequest pageRequest = PageRequest.of(page, size);
-        List<Post> targetPostList = postRepository.findAllByOrderByLikeCountDesc(pageRequest);
+    public List<PostResponse> getAllPost(@AuthenticationPrincipal User user, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) { // 고치기
+        List<Post> targetPostList;
+        if (page != null && size != null) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            targetPostList = postRepository.findAllByOrderByLikeCountDesc(pageRequest);
+        } else {
+            targetPostList = postRepository.findAllByOrderByLikeCountDesc();
+        }
         List<PostResponse> result = new ArrayList<>();
         processPost(user, targetPostList, result);
         return result;
     }
+
 
     private void processPost(User user, List<Post> targetPostList, List<PostResponse> result) {
         for (Post p : targetPostList) {
@@ -109,7 +115,6 @@ public class PostController {
     @Data
     @AllArgsConstructor
     static class PostResponse {
-
         private Long id, likeCount, viewCount, template; // query 해야될듯 ^^;
         private String nickname, imageUrl, content, title, email;
         private LocalDateTime createdAt, modifiedAt;
@@ -150,6 +155,7 @@ public class PostController {
             this.modifiedAt = comment.getModifiedAt();
         }
     }
+
     @Validated
     @Getter
     @Setter
