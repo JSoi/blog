@@ -25,7 +25,7 @@ public class LikesController {
     @RequestMapping(value = "/{postId}/like", method = {RequestMethod.POST,RequestMethod.DELETE})
     public Response.Simple doLike(@PathVariable Long postId, @AuthenticationPrincipal User user) {
         Validator.validateLoginUser(user, ErrorCode.NEED_LOGIN_TO_LIKE);
-        LikesDto targetLikes = LikesDto.builder().post_id(postId).user_id(user.getId()).build();
+        LikesDto targetLikes = LikesDto.builder().post_id(postId).user(user).build();
         likeService.doLike(targetLikes);
         return Response.Simple.builder().build();
     }

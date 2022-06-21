@@ -83,7 +83,7 @@ class UserServiceTest {
                 BlogException blogException = assertThrows(BlogException.class, () -> {
                     userService.register(newComer);
                 });
-                assertThat(blogException.getErrorCode()).isEqualTo(ErrorCode.BAD_NICKNAME);
+                assertThat(blogException.getErrorCode()).isEqualTo(ErrorCode.BAD_PW);
             }
         }
 
@@ -100,7 +100,8 @@ class UserServiceTest {
             String testPassword = "testpassword";
             UserDto.Login loginDto = UserDto.Login.builder().email(testEmail).password(testPassword).build();
             //when
-            User user = User.builder().email(testEmail).password(testPassword).roles(Collections.singletonList("ROLE_USER")).build();
+            User user = User.builder().email("testemail@email.com").password("testpassword").roles(Collections.singletonList("ROLE_USER"))
+                    .introduce("introduce").nickname("nickname").name("name").build();
             when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(testPassword, user.getPassword())).thenReturn(true);
             when(jwtTokenProvider.createToken(user.getEmail(), user.getRoles())).thenReturn("mytoken");
@@ -128,7 +129,8 @@ class UserServiceTest {
 
         @Test
         void 틀린_비밀번호() {
-            User user = User.builder().email("test@test.com").password("testpassword").roles(Collections.singletonList("ROLE_USER")).build();
+            User user = User.builder().email("testemail@email.com").password("testpassword").roles(Collections.singletonList("ROLE_USER"))
+                    .introduce("introduce").nickname("nickname").name("name").build();
             UserDto.Login loginDto = UserDto.Login.builder().email("test@test.com").password("testpassword").build();
             when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
             //when
