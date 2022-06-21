@@ -45,6 +45,17 @@ jobs:
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
 
+      - name: Read secrets from AWS Secrets Manager into environment variables
+        uses: abhilash1in/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+          aws-region: ap-northeast-2
+          secrets: |
+            /secret/jsoi
+          parse-json: false
+
       
       - name: Code Deploy
         run : aws deploy create-deployment --application-name codedeploy --deployment-group-name ci-cd --file-exists-behavior OVERWRITE --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip --region ap-northeast-2
+
