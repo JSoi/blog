@@ -32,9 +32,10 @@ public class ImageService {
     private final AmazonS3 amazonS3;
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+    private final List<String> imgLst = Arrays.asList(".jpg", ".png", ".jpeg", ".bmp");
 
-    public String uploadImageFile(MultipartFile multipartFile) {
-        String fileName = createFileName(multipartFile.getOriginalFilename());
+    public String uploadImage(MultipartFile multipartFile) {
+        String fileName = UUID.randomUUID().toString().concat(getFileExtension(multipartFile.getOriginalFilename()));
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
@@ -45,26 +46,18 @@ public class ImageService {
         } catch (IOException e) {
             throw new BlogException(ErrorCode.IMAGE_ERROR);
         }
-        return fileName;
+        return bucketName + ".s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
-    public String uploadImage(MultipartFile multipartFile) {
-        return bucketName + ".s3.ap-northeast-2.amazonaws.com/" + uploadImageFile(multipartFile);
-    }
 
     public void deleteImage(String fileName) {
         String specFileName = fileName.replaceFirst(bucketName + ".s3.ap-northeast-2.amazonaws.com/", "");
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, specFileName));
     }
 
-    private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
-    }
-
     private String getFileExtension(String fileName) {
-        List<String> imgLst = Arrays.asList(".jpg", ".png", ".jpeg", ".bmp");
         fileName = fileName.toLowerCase();
-        String target = "";
+        String target;
         try {
             target = fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {

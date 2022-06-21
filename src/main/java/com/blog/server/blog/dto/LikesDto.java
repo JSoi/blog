@@ -1,5 +1,6 @@
 package com.blog.server.blog.dto;
 
+import com.blog.server.blog.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class LikesDto {
-    Long user_id;
+    User user;
     Long post_id;
 }

@@ -1,14 +1,17 @@
 package com.blog.server.blog.repository;
 
 import com.blog.server.blog.domain.Post;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    List<Post> findAllByOrderByLikeCountDesc(PageRequest pageable);
     List<Post> findAllByOrderByLikeCountDesc();
     @Modifying
     @Query("update Post p set p.viewCount = p.viewCount + 1 where p.id = :id")

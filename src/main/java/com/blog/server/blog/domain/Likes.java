@@ -27,6 +27,7 @@ public class Likes extends TimeStamped {
     @JoinColumn(name = "userId")
     private User user;
 
+    @Builder
     public Likes(Post post, User user) {
         this.post = post;
         this.user = user;

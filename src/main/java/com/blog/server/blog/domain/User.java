@@ -1,7 +1,6 @@
 package com.blog.server.blog.domain;
 
 
-import com.blog.server.blog.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -53,16 +52,19 @@ public class User extends TimeStamped implements UserDetails {
     @JsonIgnore
     @Column
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Comment> commentList = new ArrayList<>();
 
     @JsonIgnore
     @Column
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Likes> likesList = new ArrayList<>();
 
     @JsonIgnore
     @Column
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Post> postList = new ArrayList<>();
 
 

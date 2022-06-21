@@ -2,6 +2,7 @@ package com.blog.server.blog.domain;
 
 import com.blog.server.blog.dto.CommentDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "comment")
 public class Comment extends TimeStamped {

@@ -2,7 +2,6 @@ package com.blog.server.blog.controller;
 
 import com.blog.server.blog.domain.Comment;
 import com.blog.server.blog.domain.Post;
-import com.blog.server.blog.domain.PostForm;
 import com.blog.server.blog.domain.User;
 import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.excpetion.BlogException;
@@ -12,18 +11,20 @@ import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.service.PostService;
 import com.blog.server.blog.validaton.Validator;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +45,19 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/api/posts")
-    public List<PostResponse> getAllPost(@AuthenticationPrincipal User user) { // 고치기
-        List<Post> targetPostList = postRepository.findAllByOrderByLikeCountDesc();
+    public List<PostResponse> getAllPost(@AuthenticationPrincipal User user, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) { // 고치기
+        List<Post> targetPostList;
+        if (page != null && size != null) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            targetPostList = postRepository.findAllByOrderByLikeCountDesc(pageRequest);
+        } else {
+            targetPostList = postRepository.findAllByOrderByLikeCountDesc();
+        }
         List<PostResponse> result = new ArrayList<>();
         processPost(user, targetPostList, result);
         return result;
     }
+
 
     private void processPost(User user, List<Post> targetPostList, List<PostResponse> result) {
         for (Post p : targetPostList) {
@@ -107,7 +115,6 @@ public class PostController {
     @Data
     @AllArgsConstructor
     static class PostResponse {
-
         private Long id, likeCount, viewCount, template; // query 해야될듯 ^^;
         private String nickname, imageUrl, content, title, email;
         private LocalDateTime createdAt, modifiedAt;
@@ -148,4 +155,19 @@ public class PostController {
             this.modifiedAt = comment.getModifiedAt();
         }
     }
+
+    @Validated
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Builder
+    public static class PostForm {
+        @NotBlank(message = "제목에 값을 입력하세요")
+        private String title;
+        @NotBlank(message = "내용에 값을 입력하세요")
+        private String content;
+        private MultipartFile image;
+        private Long template = 1L;
+    }
+
 }
