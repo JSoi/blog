@@ -13,6 +13,7 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@PropertySources({ @PropertySource("classpath:application-dev.properties")})
 public class BlogApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BlogApplication.class, args);
