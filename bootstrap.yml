@@ -1,7 +1,0 @@
-aws:
-  secretsmanager:
-    name: jsoi #프로젝트 이름
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
