@@ -7,6 +7,7 @@ import com.blog.server.blog.dto.Response;
 import com.blog.server.blog.excpetion.BlogException;
 import com.blog.server.blog.excpetion.ErrorCode;
 import com.blog.server.blog.repository.LikesRepository;
+import com.blog.server.blog.repository.PostPagingRepository;
 import com.blog.server.blog.repository.PostRepository;
 import com.blog.server.blog.repository.UserRepository;
 import com.blog.server.blog.service.PostService;
@@ -14,8 +15,13 @@ import com.blog.server.blog.validaton.Validator;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +33,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.blog.server.blog.excpetion.ErrorCode.POST_NOT_EXIST;
@@ -43,19 +51,29 @@ public class PostController {
     private final UserRepository userRepository;
     private final LikesRepository likesRepository;
     private final PostService postService;
+    private final PostPagingRepository PostPagingRepository;
 
     @GetMapping("/api/posts")
-    public List<PostResponse> getAllPost(@AuthenticationPrincipal User user, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) { // 고치기
+//    public List<PostResponse> getAllPost(@AuthenticationPrincipal User user,
+//                                         @RequestParam(required = false) Integer size,
+//                                         @RequestParam(required = false) Integer page) { // 고치기
+    public ResponseEntity<Map<String,Object>> getAllPost(@AuthenticationPrincipal User user,
+                                                         @PageableDefault(sort = {"likeCount"}, direction = Sort.Direction.DESC) Pageable pageable) { // 고치기
         List<Post> targetPostList;
-        if (page != null && size != null) {
-            PageRequest pageRequest = PageRequest.of(page, size);
-            targetPostList = postRepository.findAllByOrderByLikeCountDesc(pageRequest);
+        boolean end = true;
+        if (pageable != null) {
+            Page<Post> pageList = PostPagingRepository.findAllBy(pageable);
+            targetPostList = pageList.getContent();
+            end = !pageList.hasNext();
         } else {
             targetPostList = postRepository.findAllByOrderByLikeCountDesc();
         }
         List<PostResponse> result = new ArrayList<>();
         processPost(user, targetPostList, result);
-        return result;
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("end", end);
+        responseMap.put("posts", result);
+        return new ResponseEntity<>(responseMap,HttpStatus.OK);
     }
 
 
@@ -169,5 +187,11 @@ public class PostController {
         private MultipartFile image;
         private Long template = 1L;
     }
-
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class PostResponseAll {
+        private boolean end = false;
+        private List<PostResponse> postResponseList = new ArrayList<>();
+    }
 }

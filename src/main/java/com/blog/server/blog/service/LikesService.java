@@ -25,6 +25,7 @@ import static com.blog.server.blog.excpetion.ErrorCode.*;
 @RequiredArgsConstructor
 public class LikesService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final LikesRepository likesRepository;
 
     @Transactional
